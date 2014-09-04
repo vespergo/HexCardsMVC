@@ -1,19 +1,36 @@
 /// <reference path="core.js" />
-
-var canvas = document.getElementById("canvas");
-var ctx = canvas.getContext("2d");
-var log = document.getElementById('log');
-
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
-
 //globals
 var isDragging = false;
 var draggingObj;
+var canvas = document.getElementById("canvas");
+var ctx = canvas.getContext("2d");
+var log = document.getElementById('log');
+var board;
+var playerHand;
+
+//DISPLAY
+//desktop
+if (window.innerWidth > window.innerHeight) {
+    canvas.width = 480;
+    canvas.height = 640;
+}
+    //mobile
+else {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+}
+
+//CALCULATE SCALE, load objects
+var scale;
+var img = new Image();
+img.onload = function () {
+    scale = ((canvas.width-40) / 5 ) / img.width;
+    board = new HexBoard({ x: canvas.width / 2, y: canvas.height / 2 - 100 }, img, scale, ctx);
+};
+img.src = "static/img/blankHex.png";
 
 
-var cat = new GameObject("img/cat.png", canvas.width/5, canvas.width/5 * 2, {x:0,y:0}, ctx);
-
+function update() { }
 
 function draw(){
   // clear the canvas
@@ -22,7 +39,7 @@ function draw(){
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   ctx.restore();
   
-  cat.Draw();
+  board.Draw();
   
 }
 
@@ -32,7 +49,7 @@ canvas.addEventListener('mousedown', function(evt){
     isDragging = true;
     draggingObj = cat;
   }
-  log.innerText = 'mousedown';
+  
 }, false);
 
 canvas.addEventListener('touchstart', function(evt){  
@@ -41,7 +58,7 @@ canvas.addEventListener('touchstart', function(evt){
     isDragging = true;
     draggingObj = cat;
   }
-  log.innerText = 'touchstart';
+  
 }, false);
 
 function Drag(point){
@@ -51,7 +68,7 @@ function Drag(point){
     draggingObj.location.y = point.y - draggingObj.height/2;
     draw();
   }
-  log.innerText = 'moving';
+  
 }
 
 canvas.addEventListener('mousemove', function(evt) {
@@ -68,17 +85,17 @@ canvas.addEventListener('touchmove', function(evt){
 
 canvas.addEventListener("mouseup", function(evt){
   isDragging = false;
-  log.innerText = 'mouseup';
+  
 });
 
 canvas.addEventListener("touchend", function(evt){
   isDragging = false;
-  log.innerText = 'touchend';
+  
 });
 
 // GAME LOOP - might not need this since we could do event based game
-// var FPS = 30;
-// setInterval(function() {
-//   update();
-//   draw();
-// }, 1000/FPS);
+ var FPS = 10;
+ setInterval(function() {
+   update();
+   draw();
+ }, 1000/FPS);

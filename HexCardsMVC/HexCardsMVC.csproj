@@ -81,8 +81,12 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Global.asax" />
-    <Content Include="Views\Home\js\core.js" />
-    <Content Include="Views\Home\js\main.js" />
+    <Content Include="static\img\backofcard.png" />
+    <Content Include="static\img\blankHex.png" />
+    <Content Include="static\img\frameSheet.png" />
+    <Content Include="static\img\numbers.png" />
+    <Content Include="static\js\core.js" />
+    <Content Include="static\js\main.js" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
@@ -97,6 +101,7 @@
     <Content Include="Views\web.config" />
     <Content Include="packages.config" />
     <Content Include="Views\Home\Index.cshtml" />
+    <None Include="Properties\PublishProfiles\hexcards.pubxml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
