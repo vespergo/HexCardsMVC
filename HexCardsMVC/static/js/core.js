@@ -38,6 +38,30 @@ function HexBoard(center, tileImg, scale, ctx) {
     }
 }
 
+function PlayerHand(center, tileImg, scale, ctx) {
+    var cards = [];
+
+    var frameImg = new Image();
+    frameImg.src = "static/img/frameSheet.png";
+    var mainImg = new Image();
+    mainImg.onload = function () {
+        for (var i = 0; i < 9; i++) {
+            //get position
+            var card = new Card(frameImg, mainImg, scale, /**/, ctx);
+            
+            cards.push();
+        }
+        
+    }
+    mainImg.src = "static/img/backofcard.png";
+
+    this.Draw = function () {
+        for (var i = 0; i < cards.length; i++) {
+            cards[i].Draw();
+        }
+    }
+}
+
 function CalculatePoint(centerOfBoard, distance, angle) {
     //bx = ax + d*cos(t);
     //by = ay + d*sin(t)
@@ -49,7 +73,17 @@ function CalculatePoint(centerOfBoard, distance, angle) {
     return finalPoint;
 }
 
+function Card(frameImg, mainImg, scale, point, ctx) {
+    this.width = mainImg.width * scale;
+    this.height = mainImg.height * scale;
+    this.location = { x: point.x, y: point.y }
+        
 
+    this.Draw = function () {
+        ctx.drawImage(mainImg, this.location.x - this.width / 2, this.location.y - this.height / 2, this.width, this.height);
+        ctx.drawImage(frameImg, 0,0, this.width, this.height, this.location.x - this.width / 2, this.location.y - this.height / 2, this.width, this.height); 
+    }
+}
 
 function GameObject(img, scale, point, ctx) {
     var self = this;
