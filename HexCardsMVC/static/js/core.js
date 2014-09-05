@@ -1,10 +1,10 @@
 function HexBoard(center, tileImg, scale, ctx) {
-    var slots = [];
+    var cards = [];
 
-    //create our slots
+    //create our cards
     //draw 19 tiles for hand, starting with first and going around in a circle
-    var centerslot = new GameObject(tileImg, scale, center, ctx);
-    slots.push(centerslot);
+    var centerslot = new Card(null, tileImg, scale, center, ctx);
+    cards.push(centerslot);
 
     var hexLevel = 1;
     var currentAngle = 0;
@@ -12,7 +12,7 @@ function HexBoard(center, tileImg, scale, ctx) {
     var tileHeight = tileImg.height * scale;
 
     for (var i = 0; i < 18; i++) {
-        var slot = new GameObject(tileImg, scale, { x: 0, y: 0 }, ctx);
+        var slot = new Card(null, tileImg, scale, { x: 0, y: 0 }, ctx);
 
         currentAngle += 60 / hexLevel;
         var distance = tileWidth;
@@ -28,30 +28,45 @@ function HexBoard(center, tileImg, scale, ctx) {
         }
 
         slot.location = CalculatePoint(center, distance, Math.PI * currentAngle / 180);
-        slots.push(slot);        
-    }    
+        cards.push(slot);
+    }
 
     this.Draw = function () {
-        for (var i = 0; i < slots.length; i++) {
-            slots[i].Draw();
+        for (var i = 0; i < cards.length; i++) {
+            cards[i].Draw();
         }
     }
+
+    this.ContainsPoint = function (point) {
+        return ContainsPoint(point, cards);
+    }
+        
 }
 
-function PlayerHand(center, tileImg, scale, ctx) {
+function PlayerHand(numCards, topLeftPos, scale, ctx) {
     var cards = [];
 
     var frameImg = new Image();
     frameImg.src = "static/img/frameSheet.png";
     var mainImg = new Image();
     mainImg.onload = function () {
-        for (var i = 0; i < 9; i++) {
+        var scaledCard = { width: mainImg.width * scale, height: mainImg.height * scale };
+        for (var i = 0; i < numCards; i++) {
             //get position
-            var card = new Card(frameImg, mainImg, scale, /**/, ctx);
-            
-            cards.push();
+            var cardPosition;
+            if (i < numCards / 2) //first row
+            {
+                cardPosition = { x: (i * scaledCard.width) + scaledCard.width / 2 + topLeftPos.x, y: topLeftPos.y };
+            }
+            else //second row
+            {
+                cardPosition = { x: (i - (numCards / 2)) * scaledCard.width + scaledCard.width / 2 + topLeftPos.x, y: topLeftPos.y + scaledCard.height * 0.75 };
+            }
+
+            var card = new Card(frameImg, mainImg, scale, cardPosition, ctx);
+            cards.push(card);
         }
-        
+
     }
     mainImg.src = "static/img/backofcard.png";
 
@@ -60,7 +75,28 @@ function PlayerHand(center, tileImg, scale, ctx) {
             cards[i].Draw();
         }
     }
+
+    this.ContainsPoint = function(point){
+        return ContainsPoint(point, cards);
+    }
+
 }
+
+
+
+
+function Card(frameImg, mainImg, scale, point, ctx) {
+    this.width = mainImg.width * scale;
+    this.height = mainImg.height * scale;
+    this.location = { x: point.x, y: point.y }
+    this.origLocation = { x: point.x, y: point.y }
+
+    this.Draw = function () {
+        ctx.drawImage(mainImg, this.location.x - this.width / 2, this.location.y - this.height / 2, this.width, this.height);
+        if(frameImg != null) ctx.drawImage(frameImg, 0, 0, mainImg.width, mainImg.height, this.location.x - this.width / 2, this.location.y - this.height / 2, this.width, this.height);
+    }
+}
+
 
 function CalculatePoint(centerOfBoard, distance, angle) {
     //bx = ax + d*cos(t);
@@ -73,42 +109,24 @@ function CalculatePoint(centerOfBoard, distance, angle) {
     return finalPoint;
 }
 
-function Card(frameImg, mainImg, scale, point, ctx) {
-    this.width = mainImg.width * scale;
-    this.height = mainImg.height * scale;
-    this.location = { x: point.x, y: point.y }
-        
-
-    this.Draw = function () {
-        ctx.drawImage(mainImg, this.location.x - this.width / 2, this.location.y - this.height / 2, this.width, this.height);
-        ctx.drawImage(frameImg, 0,0, this.width, this.height, this.location.x - this.width / 2, this.location.y - this.height / 2, this.width, this.height); 
-    }
-}
-
-function GameObject(img, scale, point, ctx) {
-    var self = this;
-    this.width = img.width * scale;
-    this.height = img.height * scale;
-    this.location = { x: point.x, y: point.y }
-
-    self.Draw = function () {
-        ctx.drawImage(img, this.location.x - this.width/2, this.location.y - this.height/2, this.width, this.height);
-    }
-
-    self.ContainsPoint = function (p) {
-        if (p.x > this.location.x && p.x < this.location.x + this.width && p.y > this.location.y && p.y < this.location.y + this.height) {
-            return true;
-        }
-        else {
-            return false;
-        }
-    }
-}
-
 function getMousePos(evt) {
     var rect = canvas.getBoundingClientRect();
     return {
         x: evt.pageX - rect.left,
         y: evt.pageY - rect.top
     };
+}
+
+function ContainsPoint(point, collection) {
+    var grabRadius = collection[0].width / 2;
+    for (var i = 0; i < collection.length; i++) {
+        if (Math.abs(point.x - collection[i].location.x) < grabRadius && Math.abs(point.y - collection[i].location.y) < grabRadius) {
+            return collection[i];
+        }
+    }
+    return null;
+}
+
+function CopyObject(obj) {
+    return JSON.parse(JSON.stringify(obj));
 }
