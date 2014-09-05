@@ -91,7 +91,7 @@ canvas.addEventListener('mousemove', function (evt) {
 
 canvas.addEventListener('touchmove', function (evt) {
     evt.preventDefault();
-    var point = getMousePos(evt.touches[0]);
+    var point = getMousePos(evt.changedTouches[0]);
     Drag(point)
 });
 
@@ -102,7 +102,7 @@ canvas.addEventListener("mouseup", function (evt) {
 });
 
 canvas.addEventListener("touchend", function (evt) {
-    var point = getMousePos(evt.touches[0]);
+    var point = getMousePos(evt.changedTouches[0]);
     Drop(point);
 });
 
