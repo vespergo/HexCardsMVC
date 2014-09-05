@@ -101,7 +101,6 @@
     <Content Include="Views\web.config" />
     <Content Include="packages.config" />
     <Content Include="Views\Home\Index.cshtml" />
-    <None Include="Properties\PublishProfiles\hexcards %282%29.pubxml" />
     <None Include="Properties\PublishProfiles\hexcards.pubxml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
