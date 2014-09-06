@@ -107,7 +107,7 @@ canvas.addEventListener("touchend", function (evt) {
 });
 
 // GAME LOOP - might not need this since we could do event based game
-var FPS = 10;
+var FPS = 20;
 setInterval(function () {
     update();
     draw();

@@ -1,0 +1,17 @@
+body {
+  background: #2E1A16;
+  /*width:100%*/
+  margin: 0;
+}
+
+h1
+{
+  color: #ffffff;
+  text-align: center;
+}
+
+/*center canvas*/
+canvas {
+  /*border: 2px solid #1E0E0E;*/
+  margin: auto;
+}
