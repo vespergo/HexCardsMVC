@@ -48,6 +48,8 @@ function PlayerHand(numCards, topLeftPos, scale, ctx) {
 
     var frameImg = new Image();
     frameImg.src = "static/img/frameSheet.png";
+    var numbersImg = new Image();
+    numbersImg.src = "static/img/numbers.png";
     var mainImg = new Image();
     mainImg.onload = function () {
         var scaledCard = { width: mainImg.width * scale, height: mainImg.height * scale };
@@ -63,7 +65,7 @@ function PlayerHand(numCards, topLeftPos, scale, ctx) {
                 cardPosition = { x: (i - (numCards / 2)) * scaledCard.width + scaledCard.width / 2 + topLeftPos.x, y: topLeftPos.y + scaledCard.height * 0.75 };
             }
 
-            var card = new Card(frameImg, mainImg, scale, cardPosition, ctx);
+            var card = new Card(frameImg, mainImg, numbersImg, scale, cardPosition, ctx);
             cards.push(card);
         }
 
@@ -85,15 +87,26 @@ function PlayerHand(numCards, topLeftPos, scale, ctx) {
 
 
 
-function Card(frameImg, mainImg, scale, point, ctx) {
+function Card(frameImg, mainImg, numbersImg, scale, point, ctx) {
     this.width = mainImg.width * scale;
     this.height = mainImg.height * scale;
     this.location = { x: point.x, y: point.y }
     this.origLocation = { x: point.x, y: point.y }
+    this.vals = {top: 0, left: 0, right: 0}
+
+    this.SetPointVals = function(vals){
+        this.vals.top = vals[0];
+        this.vals.left = vals[1];
+        this.vals.right = vals[2];
+    }
 
     this.Draw = function () {
         ctx.drawImage(mainImg, this.location.x - this.width / 2, this.location.y - this.height / 2, this.width, this.height);
-        if(frameImg != null) ctx.drawImage(frameImg, 0, 0, mainImg.width, mainImg.height, this.location.x - this.width / 2, this.location.y - this.height / 2, this.width, this.height);
+        if (frameImg != null) ctx.drawImage(frameImg, 0, 0, mainImg.width, mainImg.height, this.location.x - this.width / 2, this.location.y - this.height / 2, this.width, this.height);
+        for (var i = 0; i < 3; i++) {
+            ctx.drawImage()
+        }
+        
     }
 }
 
