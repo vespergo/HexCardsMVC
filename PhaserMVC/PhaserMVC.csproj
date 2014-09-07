@@ -88,9 +88,7 @@
     <Content Include="static\img\HandBoard.png" />
     <Content Include="static\img\numbers.png" />
     <Content Include="static\img\TreasureChest.png" />
-    <Content Include="static\js\GameObjects.js" />
     <Content Include="static\js\main.js" />
-    <Content Include="static\js\phaser.js" />
     <Content Include="static\js\phaser.min.js" />
     <Content Include="Web.config" />
   </ItemGroup>
