@@ -1,4 +1,5 @@
-/// <reference path="phaser.min.js" />
+/// <reference path="phaser.js" />
+/// <reference path="GameObjects.js" />
 var game = new Phaser.Game(768, 1000, Phaser.AUTO, 'mainDiv');
 var scale = 1;
 
@@ -12,6 +13,7 @@ var mainState = {
         game.load.image('handBoard', 'static/img/HandBoard.png');
         game.load.spritesheet('numberSheet', 'static/img/numbers.png', 18, 22, 33);
         game.load.spritesheet('cardFrameSheet', 'static/img/cardFrameSheet.png', 150, 172, 8);
+        
     },
 
     create: function () {
@@ -100,7 +102,7 @@ var mainState = {
         this.handBoard.anchor.setTo(0.5, 1);
 
         // Create a group of empty hexes
-        this.emptyHandBoardHexes = game.add.group();
+        this.playerHand = game.add.group();
         var handBoardPositions = [
         //1st Row
             //Hex0
@@ -125,38 +127,17 @@ var mainState = {
             { x: Math.round((this.handBoard.x + 225) * scale), y: Math.round((this.handBoard.y - 178) * scale) },
         ];
 
-        this.emptyHandBoardHexes.createMultiple(9, 'cardFrameSheet', 4, true);
-        for (var i = 0; i < this.emptyHandBoardHexes.length; i++) {
-            this.emptyHandBoardHexes.getAt(i).x = handBoardPositions[i].x;
-            this.emptyHandBoardHexes.getAt(i).y = handBoardPositions[i].y;
-            this.emptyHandBoardHexes.getAt(i).origPos = {x: handBoardPositions[i].x, y: handBoardPositions[i].y};
-            this.emptyHandBoardHexes.getAt(i).inputEnabled = true;
-            this.emptyHandBoardHexes.getAt(i).input.enableDrag(true);
-            this.emptyHandBoardHexes.getAt(i).events.onDragStop.add(this.dragStop);
-            
-
+        //create 9 cards
+        for (var i = 0; i < 9; i++) {
+            var point = { x: handBoardPositions[i].x, y: handBoardPositions[i].y };
+            var card = new Card(point, this.playerHand);            
         }
+
+
+        
     },
     
-    dragStop: function(card){
-        //lets check to see if it landed on the board, otherwise return to original location
-        var onBoard = false;
-        var cardCenter = {x: card.position.x+card.width/2, y: card.position.y+card.height/2};
-        
-        for(var i=0; i<mainState.emptyGameBoardHexes.length; i++){
-            var boardHex = mainState.emptyGameBoardHexes.getAt(i);
-            if(boardHex.position.x < cardCenter.x && cardCenter.x < boardHex.position.x + boardHex.width && boardHex.position.y < cardCenter.y && cardCenter.y < boardHex.position.y+boardHex.width){
-                //found hex on board
-                onBoard = true;
-                card.position = CopyObject(boardHex.position);
-                break;
-            }
-        }
-        //return to origPos
-        if(!onBoard){
-            card.position = CopyObject(card.origPos);
-        }
-    }
+    
 };
 
 game.state.add('main', mainState);
