@@ -9,10 +9,10 @@ var mainState = {
     
     preload: function () {
         //Load Art Assets
-        game.load.image('gameBoard', 'img/GameBoard.png');
-        game.load.image('handBoard', 'img/HandBoard.png');
-        game.load.spritesheet('numberSheet', 'img/numbers.png', 18, 22, 33);
-        game.load.spritesheet('cardFrameSheet', 'img/FrameSheet.png', 150, 140, 6);
+        game.load.image('gameBoard', 'static/img/GameBoard.png');
+        game.load.image('handBoard', 'static/img/HandBoard.png');
+        game.load.spritesheet('numberSheet', 'static/img/numbers.png', 18, 22, 33);
+        game.load.spritesheet('cardFrameSheet', 'static/img/FrameSheet.png', 150, 140, 6);
         
     },
 
@@ -32,9 +32,7 @@ var mainState = {
     },
 
     update: function() {
-        for (var i = 0; i < this.playerHand.length; i++) {
-            this.playerHand.getAt(i).update();
-        }
+        
     },
 
     buildGameBoard: function () {
