@@ -1,16 +1,27 @@
 /// <reference path="phaser.js" />
 /// <reference path="main.js" />
+/// <reference path="phaser.js" />
+/// <reference path="main.js" />
 Card = function (point, group) {
     this.position = point;
-    this.cardImg = game.add.sprite(this.position.x, this.position.y, 'cardFrameSheet', 4, group);
-    this.numberLeft = game.add.sprite(this.position.x - Math.round(62 * scale), 
-                                      this.position.y - Math.round(20 * scale), 'numberSheet', 0);
-    this.numberLeft.anchor.setTo(0.5, 0.5);
-    this.cardImg.anchor.setTo(0.5, 0.5);
+    var cardImg = game.add.sprite(this.position.x, this.position.y, 'cardFrameSheet', 3, group);
+    cardImg.anchor.setTo(0.5, 0.5);
+
+    var buffer = 3;
+    var numberLeft = game.add.sprite(-cardImg.width / 2+buffer, -cardImg.height/4+buffer, 'numberSheet', 1); 
+    var numberBottom = game.add.sprite(0, cardImg.height/2.3+buffer, 'numberSheet', 7);   
+    numberBottom.anchor.setTo(0.5, 1);
+    var numberRight = game.add.sprite(cardImg.width / 3+buffer, -cardImg.height/4+buffer, 'numberSheet', 3);
+
+    //we'll bing all the sprites to the cardImg one and then they'll follow the cardImg as it's dragged
+    cardImg.addChild(numberLeft);
+    cardImg.addChild(numberBottom);
+    cardImg.addChild(numberRight);
+    
     this.origPos = CopyObject(point);
-    this.cardImg.inputEnabled = true;
-    this.cardImg.input.enableDrag(true);
-    this.cardImg.events.onDragStop.add(this.dragStop, this);
+    cardImg.inputEnabled = true;
+    cardImg.input.enableDrag(true);
+    cardImg.events.onDragStop.add(this.dragStop, this);
     
 }
 
@@ -33,8 +44,4 @@ Card.prototype.dragStop = function(cardImg){
     if(!onBoard){
         cardImg.position = CopyObject(this.origPos);
     }
-}
-
-Card.prototype.update = function () {
-    this.numberLeft.x = this.position.x;
 }

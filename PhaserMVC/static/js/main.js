@@ -11,7 +11,7 @@ var mainState = {
         //Load Art Assets
         game.load.image('gameBoard', 'img/GameBoard.png');
         game.load.image('handBoard', 'img/HandBoard.png');
-        game.load.spritesheet('numberSheet', 'img/numbers.png', 18, 22, 33);
+        game.load.spritesheet('numberSheet', 'img/numbers.png', 18, 22, 33, 1, 2);
         game.load.spritesheet('cardFrameSheet', 'img/FrameSheet.png', 150, 140, 6);
         
     },
