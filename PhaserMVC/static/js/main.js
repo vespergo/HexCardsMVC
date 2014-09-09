@@ -32,9 +32,7 @@ var mainState = {
     },
 
     update: function() {
-        for (var i = 0; i < this.playerHand.length; i++) {
-            this.playerHand.getAt(i).update();
-        }
+        
     },
 
     buildGameBoard: function () {
