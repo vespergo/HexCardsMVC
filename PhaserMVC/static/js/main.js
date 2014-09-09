@@ -13,6 +13,7 @@ var mainState = {
         game.load.image('handBoard', 'img/HandBoard.png');
         game.load.spritesheet('numberSheet', 'img/numbers.png', 18, 22, 33, 1, 2);
         game.load.spritesheet('cardFrameSheet', 'img/FrameSheet.png', 150, 140, 6);
+        game.load.spritesheet('elementalBGs', 'img/ElementalBGs.png', 150, 140, 6);
         
     },
 
