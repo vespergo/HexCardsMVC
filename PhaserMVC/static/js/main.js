@@ -1,5 +1,6 @@
 /// <reference path="phaser.js" />
 /// <reference path="GameObject.js" />
+var myTurn = false;
 var game = new Phaser.Game(768, 954, Phaser.AUTO, 'mainDiv');
 var scale = 1;
 
@@ -138,6 +139,30 @@ var mainState = {
 game.state.add('main', mainState);
 game.state.start('main');
 
+
+//websockets
+var uri = "ws://"+window.location.host +"/api/Socket";
+
+//Initialize socket  
+websocket = new WebSocket(uri);
+
+//Open socket and send message  
+websocket.onopen = function () {
+    console.log('opening connection');
+    websocket.send("name=Josh");
+};
+
+//Socket error handler  
+websocket.onerror = function (event) {
+    console.log('error');
+};
+
+//Socket message handler  
+websocket.onmessage = function (event) {
+    if (event.data.action == "yourturn") {
+        myTurn = true;
+    }
+};
 
 //core funcs
 function CopyObject(obj) {

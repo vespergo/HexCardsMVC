@@ -45,3 +45,7 @@ Card.prototype.dragStop = function (cardImg) {
         cardImg.position = CopyObject(this.origPos);
     }
 }
+
+Board = function () {
+
+}
