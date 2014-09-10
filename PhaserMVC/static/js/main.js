@@ -11,6 +11,7 @@ var mainState = {
         //Load Art Assets
         game.load.image('gameBoard', 'img/GameBoard.png');
         game.load.image('handBoard', 'img/HandBoard.png');
+        game.load.image('wolf', 'img/Char_Wolf.png');
         game.load.spritesheet('numberSheet', 'img/numbers.png', 18, 22, 33, 1, 2);
         game.load.spritesheet('cardFrameSheet', 'img/FrameSheet.png', 150, 140, 6);
         game.load.spritesheet('elementalBGs', 'img/ElementalBGs.png', 150, 140, 6);
@@ -134,7 +135,7 @@ var mainState = {
         //create 9 cards
         for (var i = 0; i < 9; i++) {
             var point = { x: handBoardPositions[i].x, y: handBoardPositions[i].y };
-            var card = new Card(point, this.playerHand);
+            var card = new Card(point, this.playerHand, 0, 5);
         }
     },
 };
