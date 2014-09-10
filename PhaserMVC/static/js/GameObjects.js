@@ -46,6 +46,7 @@ Card.prototype.dragStop = function (cardImg) {
     }
 }
 
+//will contain all the cards that have been played to the board.
 Board = function () {
 
 }
