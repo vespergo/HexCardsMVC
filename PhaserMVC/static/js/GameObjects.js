@@ -9,7 +9,7 @@ Card = function (point, group) {
     var numberLeft = game.add.sprite(-cardImg.width / 2+buffer, -cardImg.height/4+buffer, 'numberSheet', 0);    
     
 
-    //we'll bind all the sprites to the cardImg one and then they'll follow the cardImg as it's dragged
+    //we'll bing all the sprites to the cardImg one and then they'll follow the cardImg as it's dragged
     cardImg.addChild(numberLeft);
     
     this.origPos = CopyObject(point);
