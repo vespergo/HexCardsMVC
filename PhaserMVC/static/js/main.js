@@ -1,19 +1,23 @@
 /// <reference path="phaser.js" />
 /// <reference path="GameObject.js" />
+
 var game = new Phaser.Game(768, 954, Phaser.AUTO, 'mainDiv');
+game.myTurn = false;
 var scale = 1;
 
 var mainState = {
     //internal vars
     emptyGameBoardHexes: {},
-    
+    board: {},
+    playerHand: {},
+    turnText: "",
+
     preload: function () {
         //Load Art Assets
         game.load.image('gameBoard', 'static/img/GameBoard.png');
         game.load.image('handBoard', 'static/img/HandBoard.png');
-        game.load.spritesheet('numberSheet', 'static/img/numbers.png', 18, 22, 33);
-        game.load.spritesheet('cardFrameSheet', 'static/img/FrameSheet.png', 150, 140, 6);
-        
+        game.load.spritesheet('numberSheet', 'static/img/numbers.png', 18, 22, 33, 1, 2);
+        game.load.spritesheet('cardFrameSheet', 'static/img/FrameSheet.png', 150, 140, 6); 
     },
 
     create: function () {
@@ -29,9 +33,13 @@ var mainState = {
 
         this.opponentName = game.add.text(game.world.width - 190, 5, 'Other Name',
         { font: Math.floor(30 * scale) + 'px Arial', fill: '#ffffff' });
+
+        this.turnText = game.add.text(150, game.world.centerY, 'Waiting for Opponent',
+           { font: Math.floor(40 * scale) + 'px Arial', fill: 'white' });
+        
     },
 
-    update: function() {
+    update: function () {
         
     },
 
@@ -91,6 +99,9 @@ var mainState = {
             { x: Math.round((this.gameBoard.x + 150) * scale), y: Math.round((this.gameBoard.y + 204) * scale) },
         ];
 
+                
+        this.board = new Board();
+        
         this.emptyGameBoardHexes.createMultiple(19, 'cardFrameSheet', 0, true);
         for (var i = 0; i < this.emptyGameBoardHexes.length; i++) {
             this.emptyGameBoardHexes.getAt(i).x = gameBoardPositions[i].x;
@@ -134,11 +145,48 @@ var mainState = {
             var card = new Card(point, this.playerHand);
         }
     },
+    toggleTurn: function (myTurn) {
+        game.myTurn = myTurn;
+        if (myTurn) {
+            this.turnText.text = "";
+        }
+        else {
+            this.turnText.text = "Opponents Turn";
+        }
+    }
 };
 
 game.state.add('main', mainState);
 game.state.start('main');
 
+
+//websockets
+var uri = "ws://"+window.location.host +"/api/Socket";
+
+//Initialize socket  
+var websocket = new WebSocket(uri);
+
+//Open socket and send message  
+websocket.onopen = function () {
+    console.log('opening connection');
+    websocket.send('{"name":"Josh"}'); //TODO pass players name on creation of new game, later we'll add more stuff
+};
+
+//Socket error handler  
+websocket.onerror = function (event) {
+    console.log('error');
+};
+
+//Socket message handler  
+websocket.onmessage = function (event) {
+    var json = JSON.parse(event.data);
+    if (json.action == "go") {
+        if (json.card != null) {
+            mainState.board.CreateCard(json.card.slotIndex, json.card.values);
+        }
+        mainState.toggleTurn(true);
+    }
+};
 
 //core funcs
 function CopyObject(obj) {
