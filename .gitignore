@@ -340,3 +340,4 @@ UpgradeLog*.htm
 # Microsoft Fakes
 FakesAssemblies/
 >>>>>>> origin/master
+*.suo
