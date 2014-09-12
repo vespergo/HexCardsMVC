@@ -9,9 +9,9 @@ Card = function (point, group, values, elementNum, frameNum, cardScale) {
     cardImg.scale.setTo(cardScale);
 
     var frameImage = game.add.sprite(0, 0, 'cardFrameSheet', frameNum)
-    var numberLeft = game.add.sprite(-62, -20, 'numberSheet', 1);
-    var numberBottom = game.add.sprite(0, 53, 'numberSheet', 7);
-    var numberRight = game.add.sprite(62, -20, 'numberSheet', 3);
+    var numberLeft = game.add.sprite(-62, -20, 'numberSheet', this.values[0]);
+    var numberBottom = game.add.sprite(0, 53, 'numberSheet', this.values[1]);
+    var numberRight = game.add.sprite(62, -20, 'numberSheet', this.values[2]);
     var character = game.add.sprite(0, -32, 'wolf');
 
     numberLeft.anchor.setTo(0.5, 0.5);
