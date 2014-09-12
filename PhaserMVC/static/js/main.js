@@ -34,9 +34,10 @@ var mainState = {
         this.opponentName = game.add.text(game.world.width - 190, 5, 'Other Name',
         { font: Math.floor(30 * scale) + 'px Arial', fill: '#ffffff' });
 
-        this.turnText = game.add.text(150, game.world.centerY, 'Waiting for Opponent',
+        this.turnText = game.add.text(game.world.centerX, game.world.centerY, '',
            { font: Math.floor(40 * scale) + 'px Arial', fill: 'white' });
-        
+        this.turnText.setText('Waiting for Opponent');
+        this.turnText.anchor.setTo(0.5, 0.5);
     },
 
     update: function () {

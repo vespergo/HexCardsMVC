@@ -23,26 +23,35 @@ namespace PhaserMVC.Controllers
         public class PhaserWebSocketHandler : WebSocketHandler
         {
             private static JavaScriptSerializer jser = new JavaScriptSerializer();
-            private static WebSocketCollection clients = new WebSocketCollection();
+            private static WebSocketCollection allClients = new WebSocketCollection();
+            private static List<PhaserWebSocketHandler> clientsWaiting = new List<PhaserWebSocketHandler>();
+
             private string name;
-            private static string messages;
+            
             public PhaserWebSocketHandler opponent;
 
             public override void OnOpen()
             {                
-                clients.Add(this);
+                allClients.Add(this);                
 
                 //launch a game
-                if (clients.Count % 2 == 0)
+                if (clientsWaiting.Count > 0)
                 {
+                    //remove the waiting client and start up a game
+                    var playerOne = clientsWaiting[0];
+                    clientsWaiting.Remove(playerOne);
+
                     //player one, and setup opponents for ease of communication later
-                    var playerOne = (PhaserWebSocketHandler)clients.ElementAt(clients.Count - 2);
                     playerOne.opponent = this;
                     opponent = playerOne;
 
-                    //start game                    
+                    //start game, sending the go signal to the first player                    
                     playerOne.Send(jser.Serialize(new { action = "go"}));
 
+                }
+                else //OR wait for opponent
+                {
+                    clientsWaiting.Add(this);
                 }
             }
 
@@ -57,7 +66,8 @@ namespace PhaserMVC.Controllers
 
             public override void OnClose()
             {
-                clients.Remove(this);
+                allClients.Remove(this);
+                if (clientsWaiting.Contains(this)) clientsWaiting.Remove(this);
             }
 
         }
