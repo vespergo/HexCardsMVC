@@ -1,5 +1,6 @@
 /// <reference path="phaser.js" />
 /// <reference path="main.js" />
+//test merge
 Card = function (point, group, values, elementNum, frameNum, cardScale) {
     this.position = point;
     this.values = values || [1, 7, 3];
