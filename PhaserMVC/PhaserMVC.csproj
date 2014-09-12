@@ -117,6 +117,7 @@
   <ItemGroup>
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApi.cs" />
+    <Compile Include="Controllers\AdminController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\SocketController.cs" />
     <Compile Include="Global.asax.cs">
@@ -132,6 +133,7 @@
     <None Include="Properties\PublishProfiles\hexcards2 %282%29.pubxml" />
     <None Include="Properties\PublishProfiles\hexcards2.pubxml" />
     <None Include="Properties\PublishProfiles\VM FTP.pubxml" />
+    <Content Include="Views\Admin\Index.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

@@ -12,7 +12,7 @@ namespace PhaserMVC.Controllers
 {
     public class SocketController : ApiController
     {
-        
+
 
         public HttpResponseMessage Get()
         {
@@ -27,12 +27,12 @@ namespace PhaserMVC.Controllers
             private static List<PhaserWebSocketHandler> clientsWaiting = new List<PhaserWebSocketHandler>();
 
             private string name;
-            
+
             public PhaserWebSocketHandler opponent;
 
             public override void OnOpen()
-            {                
-                allClients.Add(this);                
+            {
+                allClients.Add(this);
 
                 //launch a game
                 if (clientsWaiting.Count > 0)
@@ -46,7 +46,7 @@ namespace PhaserMVC.Controllers
                     opponent = playerOne;
 
                     //start game, sending the go signal to the first player                    
-                    playerOne.Send(jser.Serialize(new { action = "go"}));
+                    playerOne.Send(jser.Serialize(new { action = "go" }));
 
                 }
                 else //OR wait for opponent
@@ -61,7 +61,7 @@ namespace PhaserMVC.Controllers
                 {
                     opponent.Send(message);
                 }
-                    
+
             }
 
             public override void OnClose()
@@ -70,18 +70,13 @@ namespace PhaserMVC.Controllers
                 if (clientsWaiting.Contains(this)) clientsWaiting.Remove(this);
             }
 
+
+            //admin area
+            public static int ConnectionCount()
+            {
+                return allClients.Count;
+            }
         }
 
-        class WebSocketMsg
-        {
-            public string action;
-            public Move move;
-        }
-
-        class Move
-        {
-            public int[] values;
-            public int location;
-        }
     }
 }
