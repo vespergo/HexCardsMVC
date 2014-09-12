@@ -1,22 +1,32 @@
 /// <reference path="phaser.js" />
 /// <reference path="main.js" />
-Card = function (point, group, values) {
+Card = function (point, group, values, elementNum, frameNum, cardScale) {
     this.position = point;
     this.values = values || [1, 7, 3];
 
     var cardImg = game.add.sprite(this.position.x, this.position.y, 'cardFrameSheet', 3, group);
     cardImg.anchor.setTo(0.5, 0.5);
+    cardImg.scale.setTo(cardScale);
 
-    var buffer = 3;
-    var numberLeft = game.add.sprite(-cardImg.width / 2+buffer, -cardImg.height/4+buffer, 'numberSheet', this.values[0]); 
-    var numberBottom = game.add.sprite(0, cardImg.height/2.3+buffer, 'numberSheet', this.values[1]);   
-    numberBottom.anchor.setTo(0.5, 1);
-    var numberRight = game.add.sprite(cardImg.width / 3+buffer, -cardImg.height/4+buffer, 'numberSheet', this.values[2]);
+    var frameImage = game.add.sprite(0, 0, 'cardFrameSheet', frameNum)
+    var numberLeft = game.add.sprite(-62, -20, 'numberSheet', 1);
+    var numberBottom = game.add.sprite(0, 53, 'numberSheet', 7);
+    var numberRight = game.add.sprite(62, -20, 'numberSheet', 3);
+    var character = game.add.sprite(0, -32, 'wolf');
+
+    numberLeft.anchor.setTo(0.5, 0.5);
+    numberBottom.anchor.setTo(0.5, 0.5);
+    numberRight.anchor.setTo(0.5, 0.5);
+    frameImage.anchor.setTo(0.5, 0.5);
+    character.anchor.setTo(0.5, 0.5);
 
     //we'll bing all the sprites to the cardImg one and then they'll follow the cardImg as it's dragged
+    cardImg.addChild(frameImage);
     cardImg.addChild(numberLeft);
     cardImg.addChild(numberBottom);
     cardImg.addChild(numberRight);
+    cardImg.addChild(character);
+    cardImg.hitArea = new Phaser.Circle(0, 0, 125);
     
     this.origPos = CopyObject(point);
     cardImg.inputEnabled = true;
@@ -35,23 +45,23 @@ Card.prototype.dragStop = function (cardImg) {
     //lets check to see if it landed on the board, otherwise return to original location
     var onBoard = false;
     var cardCenter = { x: cardImg.position.x + cardImg.width / 2, y: cardImg.position.y + cardImg.height / 2 };
-
+        
     for (var i = 0; i < mainState.emptyGameBoardHexes.length; i++) {
         var boardHex = mainState.emptyGameBoardHexes.getAt(i);
         if (boardHex.position.x < cardCenter.x && cardCenter.x < boardHex.position.x + boardHex.width &&
          boardHex.position.y < cardCenter.y && cardCenter.y < boardHex.position.y + boardHex.width) {
             //only place if not already on the board
             if (mainState.board.slots[i] == null) {
-                //found hex on board
-                onBoard = true;
-                cardImg.position = CopyObject(boardHex.position);
+            //found hex on board
+            onBoard = true;
+            cardImg.position = CopyObject(boardHex.position);
                 mainState.board.PlaceCard(i, this);
                 mainState.playerHand.remove(this);
                 
                 cardImg.inputEnabled = false;
-                break;
-            }
+            break;
         }
+    }
     }
     //return to origPos
     if (!onBoard) {
@@ -80,7 +90,7 @@ function Board() {
     this.CreateCard = function(slotIndex, values){
         //get the point coords
         var point = { x: mainState.emptyGameBoardHexes.getAt(slotIndex).x, y: mainState.emptyGameBoardHexes.getAt(slotIndex).y };
-        var card = new Card(point, undefined, values);
+        var card = new Card(point, undefined, values, 0, 5, globalScale);
         this.slots[slotIndex] = card;
         mainState.toggleTurn(true);        
     }
