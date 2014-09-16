@@ -5,7 +5,7 @@ Card = function (point, group, values, elementNum, frameNum, cardScale) {
     this.position = point;
     this.values = values || [1, 7, 3];
 
-    var cardImg = game.add.sprite(this.position.x, this.position.y, 'cardFrameSheet', 3, group);
+    var cardImg = game.add.sprite(this.position.x, this.position.y, 'elementalBGs', elementNum, group);
     cardImg.anchor.setTo(0.5, 0.5);
     cardImg.scale.setTo(cardScale);
 

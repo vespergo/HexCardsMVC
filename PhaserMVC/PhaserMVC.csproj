@@ -104,6 +104,8 @@
     <Content Include="Global.asax" />
     <Content Include="static\css\style.css" />
     <Content Include="static\favicon.ico" />
+    <Content Include="static\img\Char_Wolf.png" />
+    <Content Include="static\img\ElementalBGs.png" />
     <Content Include="static\img\FrameSheet.png" />
     <Content Include="static\img\GameBoard.png" />
     <Content Include="static\img\HandBoard.png" />
