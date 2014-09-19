@@ -132,6 +132,8 @@
     <Content Include="packages.config" />
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="static\js\phaser.map" />
+    <None Include="Properties\PublishProfiles\hexcards2 %282%29.pubxml" />
+    <None Include="Properties\PublishProfiles\hexcards2.pubxml" />
     <None Include="Properties\PublishProfiles\VM FTP.pubxml" />
     <Content Include="Views\Admin\Index.cshtml" />
     <None Include="Web.Debug.config">

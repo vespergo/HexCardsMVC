@@ -46,8 +46,8 @@ namespace PhaserMVC.Controllers
                     opponent = playerOne;
 
                     //start game, sending the go signal to the first player                    
-                    playerOne.Send(jser.Serialize(new { action = "startgame", player = 1 }));
-                    this.Send(jser.Serialize(new { action = "startgame", player = 2 }));
+                    playerOne.Send(jser.Serialize(new { action = "go" }));
+
                 }
                 else //OR wait for opponent
                 {
