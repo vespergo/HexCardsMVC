@@ -13,8 +13,8 @@ if (screenRatio >= 0.8767 && window.innerWidth >= 768) {
 }
     //mobile
 else {
-    canvWidth = window.innerWidth;
-    canvHeight = window.innerHeight;
+    canvWidth = window.innerWidth * window.devicePixelRatio;
+    canvHeight = window.innerHeight * window.devicePixelRatio;
 }
 
 var game = new Phaser.Game(canvWidth, canvHeight, Phaser.AUTO, 'mainDiv');
@@ -47,9 +47,9 @@ var mainState = {
         //Add boards
         this.buildGameBoard();
         this.buildHandBoard();
-        
+
         // Display the names
-        this.playerName = game.add.text(10, 5, screenRatio,
+        this.playerName = game.add.text(10, 5, canvWidth,
         { font: Math.floor(30 * globalScale) + 'px Arial', fill: '#ffffff' });
 
         this.opponentName = game.add.text(game.world.width - 190, 5, 'Other Name',
@@ -66,7 +66,7 @@ var mainState = {
     },
 
     buildGameBoard: function () {
-        this.gameBoard = game.add.sprite(game.world.centerX, 0 + Math.round(350 * globalScale), 'gameBoard');
+        this.gameBoard = game.add.sprite(game.world.centerX, Math.round(game.world.height / 2.7), 'gameBoard');
         this.gameBoard.anchor.setTo(0.5, 0.5);
         this.gameBoard.scale.setTo(globalScale);
 
@@ -133,7 +133,7 @@ var mainState = {
         }
     },
     buildHandBoard: function () {
-        this.handBoard = game.add.sprite(game.world.centerX, game.world.height - 140 * globalScale, 'handBoard');
+        this.handBoard = game.add.sprite(game.world.centerX, Math.round(game.world.height / 1.2), 'handBoard');
         this.handBoard.anchor.setTo(0.5, 0.5);
         this.handBoard.scale.setTo(globalScale);
 
