@@ -25,11 +25,12 @@ var globalScale = (canvWidth / 768).toFixed(4);
 
 var mainState = {
     //internal vars
-    emptyGameBoardHexes: {},
-    board: {},
-    playerHand: {},
-    turnText: "",
-    
+    emptyGameBoardHexes: {}, //for display purposes only
+    board: {}, //cards will be moved from playerHand to here
+    playerHand: [], //array of cards
+    turnText: "", //status area in the center of the board
+    player: 0, //1 or 2
+
     preload: function () {
         //Load Art Assets
         game.load.image('gameBoard', 'static/img/GameBoard.png');
@@ -47,22 +48,21 @@ var mainState = {
         //Add boards
         this.buildGameBoard();
         this.buildHandBoard();
-        
+
         // Display the names
         this.playerName = game.add.text(10, 5, screenRatio,
         { font: Math.floor(30 * globalScale) + 'px Arial', fill: '#ffffff' });
 
-        this.opponentName = game.add.text(game.world.width - 190, 5, 'Other Name',
-        { font: Math.floor(30 * globalScale) + 'px Arial', fill: '#ffffff' });
 
-        this.turnText = game.add.text(game.world.centerX, game.world.centerY, '',
+        //turntext
+        this.turnText = game.add.text(game.world.centerX, 0, '',
            { font: Math.floor(40 * globalScale) + 'px Arial', fill: 'white' });
         this.turnText.setText('Waiting for Opponent');
-        this.turnText.anchor.setTo(0.5, 0.5);
+        this.turnText.anchor.setTo(0.5, 0);
     },
 
     update: function () {
-        
+
     },
 
     buildGameBoard: function () {
@@ -121,9 +121,9 @@ var mainState = {
             { x: Math.round(this.gameBoard.x + 150 * globalScale), y: Math.round(this.gameBoard.y + 204 * globalScale) },
         ];
 
-                
+
         this.board = new Board();
-        
+
         this.emptyGameBoardHexes.createMultiple(19, 'cardFrameSheet', 0, true);
         for (var i = 0; i < this.emptyGameBoardHexes.length; i++) {
             this.emptyGameBoardHexes.getAt(i).x = gameBoardPositions[i].x;
@@ -137,8 +137,6 @@ var mainState = {
         this.handBoard.anchor.setTo(0.5, 0.5);
         this.handBoard.scale.setTo(globalScale);
 
-        // Create a group of empty hexes
-        this.playerHand = game.add.group();
         var handBoardPositions = [
         //1st Row
             //Hex0
@@ -166,8 +164,11 @@ var mainState = {
         //create 9 cards
         for (var i = 0; i < 9; i++) {
             var point = { x: handBoardPositions[i].x, y: handBoardPositions[i].y };
-            var card = new Card(point, this.playerHand, [1,7,3], 0, 5, globalScale);
+            var card = new Card(point, [1, 7, 3], 0, 5, globalScale);
+            mainState.playerHand.push(card);
         }
+
+        
     },
     toggleTurn: function (myTurn) {
         game.myTurn = myTurn;
@@ -185,7 +186,7 @@ game.state.start('main');
 
 
 //websockets
-var uri = "ws://"+window.location.host +"/api/Socket";
+var uri = "ws://" + window.location.host + "/api/Socket";
 
 //Initialize socket  
 var websocket = new WebSocket(uri);
@@ -204,10 +205,16 @@ websocket.onerror = function (event) {
 //Socket message handler  
 websocket.onmessage = function (event) {
     var json = JSON.parse(event.data);
-    if (json.action == "go") {
-        if (json.card != null) {
-            mainState.board.CreateCard(json.card.slotIndex, json.card.values);
+    if (json.action == "startgame") {
+        mainState.toggleTurn(true);
+        mainState.player = json.player;
+        //flip all cards to color
+        for (var i = 0; i < mainState.playerHand.length; i++) {
+            mainState.playerHand[i].SetOwner(mainState.player);
         }
+    }
+    else if (json.action == "go") {
+        mainState.board.CreateCard(json.card.slotIndex, json.card.values, json.card.owner);
         mainState.toggleTurn(true);
     }
 };

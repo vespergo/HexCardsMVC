@@ -1,13 +1,14 @@
 /// <reference path="phaser.js" />
 /// <reference path="main.js" />
 //test merge
-Card = function (point, group, values, elementNum, frameNum, cardScale) {
+Card = function (point, values, elementNum, frameNum, cardScale) {
     this.position = point;
     this.values = values || [1, 7, 3];
+    this.owner = 0; //1 for playerOne;  2 for playerTwo
 
-    var cardImg = game.add.sprite(this.position.x, this.position.y, 'elementalBGs', elementNum, group);
-    cardImg.anchor.setTo(0.5, 0.5);
-    cardImg.scale.setTo(cardScale);
+    this.cardImg = game.add.sprite(this.position.x, this.position.y, 'elementalBGs', this.frame);
+    this.cardImg.anchor.setTo(0.5, 0.5);
+    this.cardImg.scale.setTo(cardScale);
 
     var frameImage = game.add.sprite(0, 0, 'cardFrameSheet', frameNum)
     var numberLeft = game.add.sprite(-62, -20, 'numberSheet', this.values[0]);
@@ -21,18 +22,18 @@ Card = function (point, group, values, elementNum, frameNum, cardScale) {
     frameImage.anchor.setTo(0.5, 0.5);
     character.anchor.setTo(0.5, 0.5);
 
-    //we'll bing all the sprites to the cardImg one and then they'll follow the cardImg as it's dragged
-    cardImg.addChild(frameImage);
-    cardImg.addChild(numberLeft);
-    cardImg.addChild(numberBottom);
-    cardImg.addChild(numberRight);
-    cardImg.addChild(character);
-    cardImg.hitArea = new Phaser.Circle(0, 0, 125);
+    //we'll bing all the sprites to the this.cardImg one and then they'll follow the this.cardImg as it's dragged
+    this.cardImg.addChild(frameImage);
+    this.cardImg.addChild(numberLeft);
+    this.cardImg.addChild(numberBottom);
+    this.cardImg.addChild(numberRight);
+    this.cardImg.addChild(character);
+    this.cardImg.hitArea = new Phaser.Circle(0, 0, 125);
     
     this.origPos = CopyObject(point);
-    cardImg.inputEnabled = true;
-    cardImg.input.enableDrag(true);
-    cardImg.events.onDragStop.add(this.dragStop, this);
+    this.cardImg.inputEnabled = true;
+    this.cardImg.input.enableDrag(true);
+    this.cardImg.events.onDragStop.add(this.dragStop, this);
     
 }
 
@@ -56,9 +57,7 @@ Card.prototype.dragStop = function (cardImg) {
             //found hex on board
             onBoard = true;
             cardImg.position = CopyObject(boardHex.position);
-                mainState.board.PlaceCard(i, this);
-                mainState.playerHand.remove(this);
-                
+                mainState.board.PlaceCard(i, this);                                
                 cardImg.inputEnabled = false;
             break;
         }
@@ -68,6 +67,19 @@ Card.prototype.dragStop = function (cardImg) {
     if (!onBoard) {
         cardImg.position = CopyObject(this.origPos);
     }
+}
+
+Card.prototype.SetOwner = function (owner) {
+
+    this.owner = owner;
+
+    //the children[0] is the first sprite added to the cardImg sprite group, hence the frame
+    if (this.owner == 1) {
+        this.cardImg.children[0].frame = 4;
+    } else {
+        this.cardImg.children[0].frame = 5;
+    }
+
 }
 
 //will contain all the cards that have been played to the board.
@@ -83,15 +95,18 @@ function Board() {
         mainState.toggleTurn(false);
 
         //websocket, send info to other player
-        websocket.send(JSON.stringify({ action: 'go', card: {slotIndex: slotIndex, values: card.values}}));
+        websocket.send(JSON.stringify({ action: 'go', card: {slotIndex: slotIndex, values: card.values, owner: card.owner}}));
     }
 
     //called by opponent
     //will only be called from websocket, hence the other player played a card, later we'll have to pass more card info in when we have card img's pass into card constructor
-    this.CreateCard = function(slotIndex, values){
+    this.CreateCard = function(slotIndex, values, owner){
         //get the point coords
         var point = { x: mainState.emptyGameBoardHexes.getAt(slotIndex).x, y: mainState.emptyGameBoardHexes.getAt(slotIndex).y };
-        var card = new Card(point, undefined, values, 0, 5, globalScale);
+
+        var card = new Card(point, values, 0, 3, globalScale);
+        card.SetOwner(owner);
+        
         this.slots[slotIndex] = card;
         mainState.toggleTurn(true);        
     }
