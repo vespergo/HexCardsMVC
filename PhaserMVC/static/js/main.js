@@ -13,8 +13,8 @@ if (screenRatio >= 0.8767 && window.innerWidth >= 768) {
 }
     //mobile
 else {
-    canvWidth = window.innerWidth;
-    canvHeight = window.innerHeight;
+    canvWidth = window.innerWidth * window.devicePixelRatio;
+    canvHeight = window.innerHeight * window.devicePixelRatio;
 }
 
 var game = new Phaser.Game(canvWidth, canvHeight, Phaser.AUTO, 'mainDiv');
@@ -30,7 +30,7 @@ var mainState = {
     playerHand: [], //array of cards
     turnText: "", //status area in the center of the board
     player: 0, //1 or 2
-
+    
     preload: function () {
         //Load Art Assets
         game.load.image('gameBoard', 'static/img/GameBoard.png');
@@ -48,9 +48,9 @@ var mainState = {
         //Add boards
         this.buildGameBoard();
         this.buildHandBoard();
-
+        
         // Display the names
-        this.playerName = game.add.text(10, 5, screenRatio,
+        this.playerName = game.add.text(10, 5, canvWidth,
         { font: Math.floor(30 * globalScale) + 'px Arial', fill: '#ffffff' });
 
 
@@ -62,11 +62,11 @@ var mainState = {
     },
 
     update: function () {
-
+        
     },
 
     buildGameBoard: function () {
-        this.gameBoard = game.add.sprite(game.world.centerX, 0 + Math.round(350 * globalScale), 'gameBoard');
+        this.gameBoard = game.add.sprite(game.world.centerX, Math.round(game.world.height / 2.7), 'gameBoard');
         this.gameBoard.anchor.setTo(0.5, 0.5);
         this.gameBoard.scale.setTo(globalScale);
 
@@ -121,9 +121,9 @@ var mainState = {
             { x: Math.round(this.gameBoard.x + 150 * globalScale), y: Math.round(this.gameBoard.y + 204 * globalScale) },
         ];
 
-
+                
         this.board = new Board();
-
+        
         this.emptyGameBoardHexes.createMultiple(19, 'cardFrameSheet', 0, true);
         for (var i = 0; i < this.emptyGameBoardHexes.length; i++) {
             this.emptyGameBoardHexes.getAt(i).x = gameBoardPositions[i].x;
@@ -133,7 +133,7 @@ var mainState = {
         }
     },
     buildHandBoard: function () {
-        this.handBoard = game.add.sprite(game.world.centerX, game.world.height - 140 * globalScale, 'handBoard');
+        this.handBoard = game.add.sprite(game.world.centerX, Math.round(game.world.height / 1.2), 'handBoard');
         this.handBoard.anchor.setTo(0.5, 0.5);
         this.handBoard.scale.setTo(globalScale);
 
@@ -212,7 +212,7 @@ websocket.onmessage = function (event) {
         for (var i = 0; i < mainState.playerHand.length; i++) {
             mainState.playerHand[i].SetOwner(mainState.player);
         }
-    }
+        }
     else if (json.action == "go") {
         mainState.board.CreateCard(json.card.slotIndex, json.card.values, json.card.owner);
         mainState.toggleTurn(true);
