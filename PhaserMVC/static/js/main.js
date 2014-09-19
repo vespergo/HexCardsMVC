@@ -194,7 +194,6 @@ var websocket = new WebSocket(uri);
 //Open socket and send message  
 websocket.onopen = function () {
     console.log('opening connection');
-    websocket.send('{"name":"Josh"}'); //TODO pass players name on creation of new game, later we'll add more stuff
 };
 
 //Socket error handler  
@@ -212,7 +211,7 @@ websocket.onmessage = function (event) {
         for (var i = 0; i < mainState.playerHand.length; i++) {
             mainState.playerHand[i].SetOwner(mainState.player);
         }
-        }
+    }
     else if (json.action == "go") {
         mainState.board.CreateCard(json.card.slotIndex, json.card.values, json.card.owner);
         mainState.toggleTurn(true);

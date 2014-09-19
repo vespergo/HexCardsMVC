@@ -73,7 +73,7 @@ Card.prototype.SetOwner = function (owner) {
 
     this.owner = owner;
 
-    //the children[0] is the first sprite added to the cardImg sprite group, hence the frame
+    //the children[0] is the first sprite added to the cardImg sprite group, hence the frame image
     if (this.owner == 1) {
         this.cardImg.children[0].frame = 4;
     } else {
