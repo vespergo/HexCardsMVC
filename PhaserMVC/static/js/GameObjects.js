@@ -3,10 +3,11 @@
 //test merge
 Card = function (point, values, elementNum, frameNum, cardScale) {
     this.position = point;
+    this.origPos = CopyObject(point);
     this.values = values || [1, 7, 3];
     this.owner = 0; //1 for playerOne;  2 for playerTwo
 
-    this.cardImg = game.add.sprite(this.position.x, this.position.y, 'elementalBGs', this.frame);
+    this.cardImg = game.add.sprite(this.position.x, this.position.y, 'elementalBGs', 0);    
     this.cardImg.anchor.setTo(0.5, 0.5);
     this.cardImg.scale.setTo(cardScale);
 
@@ -30,7 +31,7 @@ Card = function (point, values, elementNum, frameNum, cardScale) {
     this.cardImg.addChild(character);
     this.cardImg.hitArea = new Phaser.Circle(0, 0, 125);
 
-    this.origPos = CopyObject(point);
+    
     this.cardImg.inputEnabled = true;
     this.cardImg.input.enableDrag(true);
     this.cardImg.events.onDragStop.add(this.dragStop, this);
@@ -56,7 +57,8 @@ Card.prototype.dragStop = function (cardImg) {
             if (mainState.board.slots[i] == null) {
                 //found hex on board
                 onBoard = true;
-                cardImg.position = CopyObject(boardHex.position);
+                this.position = CopyObject(boardHex.position);
+                this.cardImg.position.setTo(this.position.x, this.position.y);
                 mainState.board.PlaceCard(i, this);
                 cardImg.inputEnabled = false;
                 break;
@@ -73,7 +75,7 @@ Card.prototype.SetOwner = function (owner) {
 
     this.owner = owner;
 
-    //the children[0] is the first sprite added to the cardImg sprite group, hence the frame image
+    //the children[0] is the first child sprite added to the cardImg sprite group, hence the frame image
     if (this.owner == 1) {
         this.cardImg.children[0].frame = 4;
     } else {
@@ -114,16 +116,66 @@ function Board() {
         mainState.toggleTurn(true);
     }
 
-    //flips neighbor cards if they should be flipped
+    //check neighboring cards, and see if they should be flipped
     this.UpdateBoard = function (card) {
+        //if a card were to exist, it should be close to this phantomCard's position
+        var phantomPoint;
+        var cardAtPoint;
+        var initialPoint = { x: card.position.x, y: card.position.y };
+
+        //must check the 6 potential cards around the just placed card
+        phantomPoint = CalculatePoint(initialPoint, card.cardImg.width, 0);        
+        cardAtPoint = this.GetCardFromFuzzyHexGrid(phantomPoint);
+        if(cardAtPoint && card.values[2] > cardAtPoint.values[0]) cardAtPoint.SetOwner(card.owner);
+
+        phantomPoint = CalculatePoint(initialPoint, card.cardImg.width, 60);
+        cardAtPoint = this.GetCardFromFuzzyHexGrid(phantomPoint);
+        if(cardAtPoint && card.values[1] > cardAtPoint.values[0]) cardAtPoint.SetOwner(card.owner);
+
+        phantomPoint = CalculatePoint(initialPoint, card.cardImg.width, 120);
+        cardAtPoint = this.GetCardFromFuzzyHexGrid(phantomPoint);
+        if(cardAtPoint && card.values[1] > cardAtPoint.values[2]) cardAtPoint.SetOwner(card.owner);
+
+        phantomPoint = CalculatePoint(initialPoint, card.cardImg.width, 180);
+        cardAtPoint = this.GetCardFromFuzzyHexGrid(phantomPoint);
+        if(cardAtPoint && card.values[0] > cardAtPoint.values[2]) cardAtPoint.SetOwner(card.owner);
+
+        phantomPoint = CalculatePoint(initialPoint, card.cardImg.width, 240);
+        cardAtPoint = this.GetCardFromFuzzyHexGrid(phantomPoint);
+        if(cardAtPoint && card.values[0] > cardAtPoint.values[1]) cardAtPoint.SetOwner(card.owner);
+
+        phantomPoint = CalculatePoint(initialPoint, card.cardImg.width, 300);
+        cardAtPoint = this.GetCardFromFuzzyHexGrid(phantomPoint);
+        if(cardAtPoint && card.values[2] > cardAtPoint.values[1]) cardAtPoint.SetOwner(card.owner);
+
+    }
+
+    //retrieves the card near a point otherwise returns null
+    this.GetCardFromFuzzyHexGrid = function(point) {
+        
         for (var i = 0; i < this.slots.length; i++) {
-            if (slots[i] != null) {
-                //check to see if its a neighbor
-                var cardInSlot = slots[i];
-                
+            if (this.slots[i] != null) {
+                var halfWidth = this.slots[i].cardImg.width/2;
+                if (Math.abs(this.slots[i].position.x - point.x) < halfWidth && Math.abs(this.slots[i].position.y - point.y) < halfWidth) {
+                    return this.slots[i];
+                }
             }
         }
+
+        return null;
     }
+}
+
+function CalculatePoint(initialPoint, distance, angle) {
+    //bx = ax + d*cos(t);
+    //by = ay + d*sin(t)
+    angle = Math.PI * angle / 180;
+
+    var finalPoint = {};
+    finalPoint.x = Math.round(initialPoint.x + distance * Math.cos(angle));
+    finalPoint.y = Math.round(initialPoint.y + distance * Math.sin(angle));
+
+    return finalPoint;
 }
 
 

@@ -37,17 +37,26 @@ namespace PhaserMVC.Controllers
                 //launch a game
                 if (clientsWaiting.Count > 0)
                 {
-                    //remove the waiting client and start up a game
-                    var playerOne = clientsWaiting[0];
-                    clientsWaiting.Remove(playerOne);
+                    //have to add a delay so that the 2nd player will be able to finish establishing the connection since this is happening in the OnOpen of the second user
+                    System.Timers.Timer timer = new System.Timers.Timer();
+                    timer.Elapsed += (obj, args) =>
+                    {
+                        //remove the waiting client and start up a game
+                        var playerOne = clientsWaiting[0];
+                        clientsWaiting.Remove(playerOne);
 
-                    //player one, and setup opponents for ease of communication later
-                    playerOne.opponent = this;
-                    opponent = playerOne;
+                        //player one, and setup opponents for ease of communication later
+                        playerOne.opponent = this;
+                        opponent = playerOne;
 
-                    //start game, sending the go signal to the first player                    
-                    playerOne.Send(jser.Serialize(new { action = "startgame", player = 1 }));
-                    this.Send(jser.Serialize(new { action = "startgame", player = 2 }));
+                        //start game, sending the go signal to the first player                    
+                        playerOne.Send(jser.Serialize(new { action = "startgame", player = 1 }));
+                        this.Send(jser.Serialize(new { action = "startgame", player = 2 }));
+                    };
+                    timer.Interval = 3000;
+                    timer.AutoReset = false;
+                    timer.Start();
+                    
                 }
                 else //OR wait for opponent
                 {
