@@ -58,7 +58,7 @@ Card.prototype.dragStop = function (cardImg) {
                 //found hex on board
                 onBoard = true;
                 this.position = CopyObject(boardHex.position);
-                this.cardImg.position.setTo(this.position.x, this.position.y);
+                this.cardImg.position = CopyObject(boardHex.position);
                 mainState.board.PlaceCard(i, this);
                 cardImg.inputEnabled = false;
                 break;

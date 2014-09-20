@@ -4,22 +4,19 @@
 //DISPLAY
 var canvWidth;
 var canvHeight;
-var screenRatio = (window.innerWidth / window.innerHeight).toFixed(4);
 
 //desktop
-if (screenRatio >= 0.8767 && window.innerWidth >= 768) {
+if (window.innerWidth > window.innerHeight) {
     canvWidth = 768;
-    canvHeight = 900; //for temporary debugging, otherwise it scrunches my hand over the board when i have chrome inspector on, for live we can change back to window.height //window.innerHeight;
+    canvHeight = 900;
 }
-    //mobile
 else {
-    canvWidth = window.innerWidth * window.devicePixelRatio;
-    canvHeight = window.innerHeight * window.devicePixelRatio;
+    canvWidth = window.innerWidth;
+    canvHeight = window.innerHeight;
 }
 
 var game = new Phaser.Game(canvWidth, canvHeight, Phaser.AUTO, 'mainDiv');
 game.myTurn = false;
-game.playerOne = false;
 var globalScale = (canvWidth / 768).toFixed(4);
 
 
@@ -50,7 +47,7 @@ var mainState = {
         this.buildHandBoard();
         
         // Display the names
-        this.playerName = game.add.text(10, 5, canvWidth,
+        this.playerName = game.add.text(10, 5, canvWidth + " x " +canvHeight,
         { font: Math.floor(30 * globalScale) + 'px Arial', fill: '#ffffff' });
 
 
@@ -205,7 +202,7 @@ websocket.onerror = function (event) {
 websocket.onmessage = function (event) {
     var json = JSON.parse(event.data);
     if (json.action == "startgame") {
-        mainState.toggleTurn(true);
+        if (json.player == 1) { mainState.toggleTurn(true); }
         mainState.player = json.player;
         //flip all cards to color
         for (var i = 0; i < mainState.playerHand.length; i++) {
