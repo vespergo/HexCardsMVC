@@ -7,6 +7,7 @@ using System.Web.Http;
 using Microsoft.Web.WebSockets;
 using System.Web;
 using System.Web.Script.Serialization;
+using System.Threading.Tasks;
 
 namespace PhaserMVC.Controllers
 {
@@ -37,25 +38,30 @@ namespace PhaserMVC.Controllers
                 //launch a game
                 if (clientsWaiting.Count > 0)
                 {
-
-                    //remove the waiting client and start up a game
-                    var playerOne = clientsWaiting[0];
-                    clientsWaiting.Remove(playerOne);
-
-                    //player one, and setup opponents for ease of communication later
-                    playerOne.opponent = this;
-                    opponent = playerOne;
-
-                    //start game, sending the go signal to the first player                    
-                    playerOne.Send(jser.Serialize(new { action = "startgame", player = 1 }));
-                    //this.Send(jser.Serialize(new { action = "startgame", player = 2 }));
-
-
+                    //have to add a delay in order to wait for the connection to be established to the 2nd player
+                    Task t = new Task(StartGame);
+                    t.Start();
                 }
                 else //OR wait for opponent
                 {
                     clientsWaiting.Add(this);
                 }
+            }
+
+            async void StartGame()
+            {
+                //remove the waiting client and start up a game
+                var playerOne = clientsWaiting[0];
+                clientsWaiting.Remove(playerOne);
+
+                //player one, and setup opponents for ease of communication later
+                playerOne.opponent = this;
+                opponent = playerOne;
+
+                await Task.Delay(1000);
+                //start game, sending the go signal to the first player                    
+                playerOne.Send(jser.Serialize(new { action = "startgame", player = 1 }));
+                this.Send(jser.Serialize(new { action = "startgame", player = 2 }));
             }
 
             public override void OnMessage(string message)

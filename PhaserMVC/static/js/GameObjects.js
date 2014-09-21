@@ -7,7 +7,7 @@ Card = function (point, values, elementNum, frameNum, cardScale) {
     this.values = values || [1, 7, 3];
     this.owner = 0; //1 for playerOne;  2 for playerTwo
 
-    this.cardImg = game.add.sprite(this.position.x, this.position.y, 'elementalBGs', 0);    
+    this.cardImg = game.add.sprite(this.position.x, this.position.y, 'elementalBGs', 0);
     this.cardImg.anchor.setTo(0.5, 0.5);
     this.cardImg.scale.setTo(cardScale);
 
@@ -31,7 +31,7 @@ Card = function (point, values, elementNum, frameNum, cardScale) {
     this.cardImg.addChild(character);
     this.cardImg.hitArea = new Phaser.Circle(0, 0, 125);
 
-    
+
     this.cardImg.inputEnabled = true;
     this.cardImg.input.enableDrag(true);
     this.cardImg.events.onDragStop.add(this.dragStop, this);
@@ -99,7 +99,7 @@ function Board() {
 
         //websocket, send info to other player
         websocket.send(JSON.stringify({ action: 'go', card: { slotIndex: slotIndex, values: card.values, owner: card.owner } }));
-        
+
     }
 
     //called by opponent
@@ -109,7 +109,7 @@ function Board() {
         var point = { x: mainState.emptyGameBoardHexes.getAt(slotIndex).x, y: mainState.emptyGameBoardHexes.getAt(slotIndex).y };
 
         var card = new Card(point, values, 0, 3, globalScale);
-        card.SetOwner(owner);        
+        card.SetOwner(owner);
         this.UpdateBoard(card);
 
         this.slots[slotIndex] = card;
@@ -119,43 +119,72 @@ function Board() {
     //check neighboring cards, and see if they should be flipped
     this.UpdateBoard = function (card) {
         //if a card were to exist, it should be close to this phantomCard's position
+        var points = 1;
         var phantomPoint;
         var cardAtPoint;
         var initialPoint = { x: card.position.x, y: card.position.y };
 
         //must check the 6 potential cards around the just placed card
-        phantomPoint = CalculatePoint(initialPoint, card.cardImg.width, 0);        
+        phantomPoint = CalculatePoint(initialPoint, card.cardImg.width, 0);
         cardAtPoint = this.GetCardFromFuzzyHexGrid(phantomPoint);
-        if(cardAtPoint && card.values[2] > cardAtPoint.values[0]) cardAtPoint.SetOwner(card.owner);
+        if (cardAtPoint && card.values[2] > cardAtPoint.values[0] && cardAtPoint.owner != card.owner) {
+            cardAtPoint.SetOwner(card.owner);
+            points++;
+        }
 
         phantomPoint = CalculatePoint(initialPoint, card.cardImg.width, 60);
         cardAtPoint = this.GetCardFromFuzzyHexGrid(phantomPoint);
-        if(cardAtPoint && card.values[1] > cardAtPoint.values[0]) cardAtPoint.SetOwner(card.owner);
+        if (cardAtPoint && card.values[1] > cardAtPoint.values[0] && cardAtPoint.owner != card.owner) {
+            cardAtPoint.SetOwner(card.owner);
+            points++;
+        }
 
         phantomPoint = CalculatePoint(initialPoint, card.cardImg.width, 120);
         cardAtPoint = this.GetCardFromFuzzyHexGrid(phantomPoint);
-        if(cardAtPoint && card.values[1] > cardAtPoint.values[2]) cardAtPoint.SetOwner(card.owner);
+        if (cardAtPoint && card.values[1] > cardAtPoint.values[2] && cardAtPoint.owner != card.owner) {
+            cardAtPoint.SetOwner(card.owner);
+            points++;
+        }
 
         phantomPoint = CalculatePoint(initialPoint, card.cardImg.width, 180);
         cardAtPoint = this.GetCardFromFuzzyHexGrid(phantomPoint);
-        if(cardAtPoint && card.values[0] > cardAtPoint.values[2]) cardAtPoint.SetOwner(card.owner);
+        if (cardAtPoint && card.values[0] > cardAtPoint.values[2] && cardAtPoint.owner != card.owner) {
+            cardAtPoint.SetOwner(card.owner);
+            points++;
+        }
 
         phantomPoint = CalculatePoint(initialPoint, card.cardImg.width, 240);
         cardAtPoint = this.GetCardFromFuzzyHexGrid(phantomPoint);
-        if(cardAtPoint && card.values[0] > cardAtPoint.values[1]) cardAtPoint.SetOwner(card.owner);
+        if (cardAtPoint && card.values[0] > cardAtPoint.values[1] && cardAtPoint.owner != card.owner) {
+            cardAtPoint.SetOwner(card.owner);
+            points++;
+        }
 
         phantomPoint = CalculatePoint(initialPoint, card.cardImg.width, 300);
         cardAtPoint = this.GetCardFromFuzzyHexGrid(phantomPoint);
-        if(cardAtPoint && card.values[2] > cardAtPoint.values[1]) cardAtPoint.SetOwner(card.owner);
+        if (cardAtPoint && card.values[2] > cardAtPoint.values[1] && cardAtPoint.owner != card.owner) {
+            cardAtPoint.SetOwner(card.owner);
+            points++;
+        }
 
+        //update score
+        if (card.owner == 1) {
+            mainState.score[0] += points;
+            mainState.score[1] -= points - 1;            
+        } else {
+            mainState.score[1] += points;
+            mainState.score[0] -= points - 1;
+        }
+        mainState.playerOneScore.setText(mainState.score[0]);
+        mainState.playerTwoScore.setText(mainState.score[1]);
     }
 
     //retrieves the card near a point otherwise returns null
-    this.GetCardFromFuzzyHexGrid = function(point) {
-        
+    this.GetCardFromFuzzyHexGrid = function (point) {
+
         for (var i = 0; i < this.slots.length; i++) {
             if (this.slots[i] != null) {
-                var halfWidth = this.slots[i].cardImg.width/2;
+                var halfWidth = this.slots[i].cardImg.width / 2;
                 if (Math.abs(this.slots[i].position.x - point.x) < halfWidth && Math.abs(this.slots[i].position.y - point.y) < halfWidth) {
                     return this.slots[i];
                 }

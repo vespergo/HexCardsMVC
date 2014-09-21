@@ -27,7 +27,10 @@ var mainState = {
     playerHand: [], //array of cards
     turnText: "", //status area in the center of the board
     player: 0, //1 or 2
-    
+    score: [0,0],
+    playerOneScore: {}, //text for the score
+    playerTwoScore: {},
+
     preload: function () {
         //Load Art Assets
         game.load.image('gameBoard', 'static/img/GameBoard.png');
@@ -46,10 +49,9 @@ var mainState = {
         this.buildGameBoard();
         this.buildHandBoard();
         
-        // Display the names
-        this.playerName = game.add.text(10, 5, canvWidth + " x " +canvHeight,
-        { font: Math.floor(30 * globalScale) + 'px Arial', fill: '#ffffff' });
-
+        // Display the scores
+        this.playerOneScore = game.add.text(10, 5, this.score[0], { font: Math.floor(60 * globalScale) + 'px Arial', fill: 'blue' });
+        this.playerTwoScore = game.add.text(canvWidth-60, 5, this.score[1],{ font: Math.floor(60 * globalScale) + 'px Arial', fill: 'red' });
 
         //turntext
         this.turnText = game.add.text(game.world.centerX, 0, '',
