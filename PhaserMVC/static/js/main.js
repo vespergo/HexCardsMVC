@@ -160,13 +160,13 @@ var mainState = {
             { x: Math.round(this.handBoard.x + 300 * globalScale), y: Math.round(this.handBoard.y + 51 * globalScale) },
         ];
 
-        //create 9 cards
+        //create 9 cards        
+        //random cards
         for (var i = 0; i < 9; i++) {
             var point = { x: handBoardPositions[i].x, y: handBoardPositions[i].y };
-            var card = new Card(point, [1, 7, 3], 0, 5, globalScale);
+            var card = new Card(point, [Math.floor(Math.random() * 10), Math.floor(Math.random() * 10), Math.floor(Math.random() * 10)], 0, 5, globalScale);
             mainState.playerHand.push(card);
         }
-
         
     },
     toggleTurn: function (myTurn) {

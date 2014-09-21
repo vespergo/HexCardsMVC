@@ -110,6 +110,7 @@ function Board() {
 
         var card = new Card(point, values, 0, 3, globalScale);
         card.SetOwner(owner);
+        card.cardImg.inputEnabled = false;
         this.UpdateBoard(card);
 
         this.slots[slotIndex] = card;
@@ -200,9 +201,10 @@ function CalculatePoint(initialPoint, distance, angle) {
     //by = ay + d*sin(t)
     angle = Math.PI * angle / 180;
 
+    //devicepixelratio adjustment
     var finalPoint = {};
-    finalPoint.x = Math.round(initialPoint.x + distance * Math.cos(angle));
-    finalPoint.y = Math.round(initialPoint.y + distance * Math.sin(angle));
+    finalPoint.x = Math.round(initialPoint.x + distance/window.devicePixelRatio * Math.cos(angle));
+    finalPoint.y = Math.round(initialPoint.y + distance/window.devicePixelRatio * Math.sin(angle));
 
     return finalPoint;
 }
