@@ -36,10 +36,10 @@ var mainState = {
         game.load.image('gameBoard', 'static/img/GameBoard.png');
         game.load.image('handBoard', 'static/img/HandBoard.png');
         game.load.image('wolf', 'static/img/Char_Wolf.png');
+        game.load.image('treasure', 'static/img/Treasure.png');
         game.load.spritesheet('numberSheet', 'static/img/numbers.png', 18, 22, 33, 1, 2);
         game.load.spritesheet('cardFrameSheet', 'static/img/FrameSheet.png', 150, 140, 6);
-        game.load.spritesheet('elementalBGs', 'static/img/ElementalBGs.png', 150, 140, 6);
-
+        game.load.spritesheet('elementalBGs', 'static/img/ElementalBGs.png', 150, 140, 6);        
     },
 
     create: function () {
@@ -58,6 +58,9 @@ var mainState = {
            { font: Math.floor(40 * globalScale) + 'px Arial', fill: 'white' });
         this.turnText.setText('Waiting for Opponent');
         this.turnText.anchor.setTo(0.5, 0);
+
+        //create treasure card
+        mainState.board.CreateCard(9, CardType.Treasure, 0);
     },
 
     update: function () {
@@ -164,10 +167,11 @@ var mainState = {
         //random cards
         for (var i = 0; i < 9; i++) {
             var point = { x: handBoardPositions[i].x, y: handBoardPositions[i].y };
-            var card = new Card(point, [Math.floor(Math.random() * 10), Math.floor(Math.random() * 10), Math.floor(Math.random() * 10)], 0, 5, globalScale);
+            var card = new Card(point, CardType.Wolf, 0, 5, globalScale);
+            card.SetValues([Math.floor(Math.random() * 10), Math.floor(Math.random() * 10), Math.floor(Math.random() * 10)]);
             mainState.playerHand.push(card);
-        }
-        
+        }        
+       
     },
     toggleTurn: function (myTurn) {
         game.myTurn = myTurn;
@@ -212,7 +216,7 @@ websocket.onmessage = function (event) {
         }
     }
     else if (json.action == "go") {
-        mainState.board.CreateCard(json.card.slotIndex, json.card.values, json.card.owner);
+        mainState.board.CreateCard(json.card.slotIndex, json.card.cardType, json.card.owner);
         mainState.toggleTurn(true);
     }
 };

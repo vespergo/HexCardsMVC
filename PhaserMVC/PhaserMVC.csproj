@@ -110,6 +110,7 @@
     <Content Include="static\img\GameBoard.png" />
     <Content Include="static\img\HandBoard.png" />
     <Content Include="static\img\numbers.png" />
+    <Content Include="static\img\Treasure.png" />
     <Content Include="static\js\GameObjects.js" />
     <Content Include="static\js\main.js" />
     <Content Include="static\js\phaser.js" />
