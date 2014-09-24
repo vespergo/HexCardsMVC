@@ -55,7 +55,7 @@ CardType = {
     EmberFox: { sprite: { x: 0, y: -32, key: 'charSheet', frame: 5, background: 1 }, values: [4, 2, 1] },
     ArcticWolf: { sprite: { x: 0, y: -32, key: 'charSheet', frame: 8, background: 2 }, values: [2, 6, 1] },
 
-    Treasure: { sprite: { x: 0, y: -32, key: 'treasure' }, values: [4, 4, 4] },
+    Treasure: { sprite: { x: 0, y: -32, key: 'treasure' }, values: [2, 2, 2] },
 }
 
 Card.prototype.dragStop = function (cardImg) {
@@ -219,8 +219,8 @@ function CalculatePoint(initialPoint, distance, angle) {
 
     //devicepixelratio adjustment
     var finalPoint = {};
-    finalPoint.x = Math.round(initialPoint.x + distance/window.devicePixelRatio * Math.cos(angle));
-    finalPoint.y = Math.round(initialPoint.y + distance/window.devicePixelRatio * Math.sin(angle));
+    finalPoint.x = Math.round(initialPoint.x + distance/globalScale * Math.cos(angle));
+    finalPoint.y = Math.round(initialPoint.y + distance/globalScale * Math.sin(angle));
 
     return finalPoint;
 }
