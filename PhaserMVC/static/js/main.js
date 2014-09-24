@@ -177,9 +177,11 @@ var mainState = {
         game.myTurn = myTurn;
         if (myTurn) {
             this.turnText.text = "";
+            document.title = "HexMage - Your Turn";
         }
         else {
             this.turnText.text = "Opponents Turn";
+            document.title = "HexMage";
         }
     }
 };
