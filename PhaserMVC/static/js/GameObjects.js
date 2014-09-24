@@ -201,7 +201,7 @@ function Board() {
 
         for (var i = 0; i < this.slots.length; i++) {
             if (this.slots[i] != null) {
-                var halfWidth = this.slots[i].cardImg.width / 2;
+                var halfWidth = this.slots[i].cardImg.width / 4;
                 if (Math.abs(this.slots[i].position.x - point.x) < halfWidth && Math.abs(this.slots[i].position.y - point.y) < halfWidth) {
                     return this.slots[i];
                 }
@@ -219,8 +219,8 @@ function CalculatePoint(initialPoint, distance, angle) {
 
     //devicepixelratio adjustment
     var finalPoint = {};
-    finalPoint.x = Math.round(initialPoint.x + distance/window.devicePixelRatio * Math.cos(angle));
-    finalPoint.y = Math.round(initialPoint.y + distance/window.devicePixelRatio * Math.sin(angle));
+    finalPoint.x = Math.round(initialPoint.x + distance * Math.cos(angle));
+    finalPoint.y = Math.round(initialPoint.y + distance * Math.sin(angle));
 
     return finalPoint;
 }
