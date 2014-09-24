@@ -8,7 +8,7 @@ Card = function (point, cardType, elementNum, frameNum, cardScale) {
     this.owner = 0; //1 for playerOne;  2 for playerTwo
     this.cardType = cardType
 
-    this.cardImg = game.add.sprite(this.position.x, this.position.y, 'elementalBGs', 0);
+    this.cardImg = game.add.sprite(this.position.x, this.position.y, 'elementalBGs', cardType.sprite.background);
     this.cardImg.anchor.setTo(0.5, 0.5);
     this.cardImg.scale.setTo(cardScale);
 
@@ -16,7 +16,7 @@ Card = function (point, cardType, elementNum, frameNum, cardScale) {
     var numberLeft = game.add.sprite(-62, -20, 'numberSheet', this.values[0]);
     var numberBottom = game.add.sprite(0, 53, 'numberSheet', this.values[1]);
     var numberRight = game.add.sprite(62, -20, 'numberSheet', this.values[2]);
-    var character = game.add.sprite(cardType.sprite.x, cardType.sprite.y, cardType.sprite.key);
+    var character = game.add.sprite(cardType.sprite.x, cardType.sprite.y, cardType.sprite.key, cardType.sprite.frame);
 
     numberLeft.anchor.setTo(0.5, 0.5);
     numberBottom.anchor.setTo(0.5, 0.5);
@@ -45,9 +45,16 @@ Card = function (point, cardType, elementNum, frameNum, cardScale) {
     }
 }
 
-//ability to add different cards now that we'll have diff cards
+//enum for card types
 CardType = {
-    Wolf: { sprite: { x: 0, y: -32, key: 'wolf' } , values: [7, 2, 3] },
+    Gecko: { sprite: { x: 0, y: -32, key: 'charSheet', frame: 0, background: 4 }, values: [2, 1, 3] },
+    Rhino: { sprite: { x: 0, y: -32, key: 'charSheet', frame: 1, background: 4 }, values: [5, 3, 2] },
+    Tortoise: { sprite: { x: 0, y: -32, key: 'charSheet', frame: 2, background: 4 }, values: [3, 3, 2] },
+    TorchBat: { sprite: { x: 0, y: -32, key: 'charSheet', frame: 3, background: 1 }, values: [1, 0, 4] },
+    Therapsid: { sprite: { x: 0, y: -32, key: 'charSheet', frame: 4, background: 1 }, values: [2, 2, 6] },
+    EmberFox: { sprite: { x: 0, y: -32, key: 'charSheet', frame: 5, background: 1 }, values: [4, 2, 1] },
+    ArcticWolf: { sprite: { x: 0, y: -32, key: 'charSheet', frame: 8, background: 2 }, values: [2, 6, 1] },
+
     Treasure: { sprite: { x: 0, y: -32, key: 'treasure' }, values: [4, 4, 4] },
 }
 

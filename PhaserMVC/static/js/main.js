@@ -34,9 +34,9 @@ var mainState = {
     preload: function () {
         //Load Art Assets
         game.load.image('gameBoard', 'static/img/GameBoard.png');
-        game.load.image('handBoard', 'static/img/HandBoard.png');
-        game.load.image('wolf', 'static/img/Char_Wolf.png');
+        game.load.image('handBoard', 'static/img/HandBoard.png');        
         game.load.image('treasure', 'static/img/Treasure.png');
+        game.load.spritesheet('charSheet', 'static/img/CharacterSheet.png', 150, 140);
         game.load.spritesheet('numberSheet', 'static/img/numbers.png', 18, 22, 33, 1, 2);
         game.load.spritesheet('cardFrameSheet', 'static/img/FrameSheet.png', 150, 140, 6);
         game.load.spritesheet('elementalBGs', 'static/img/ElementalBGs.png', 150, 140, 6);        
@@ -163,12 +163,21 @@ var mainState = {
             { x: Math.round(this.handBoard.x + 300 * globalScale), y: Math.round(this.handBoard.y + 51 * globalScale) },
         ];
 
-        //create 9 cards        
+        //create 9 cards
+
+        function RandomCardType(max) {
+            var randNum = Math.floor(Math.random() * max);
+            var i = 0;
+            for (var prop in CardType){
+                if (i == randNum) return CardType[prop];
+                i++;
+            }
+        }
         //random cards
         for (var i = 0; i < 9; i++) {
             var point = { x: handBoardPositions[i].x, y: handBoardPositions[i].y };
-            var card = new Card(point, CardType.Wolf, 0, 5, globalScale);
-            card.SetValues([Math.floor(Math.random() * 10), Math.floor(Math.random() * 10), Math.floor(Math.random() * 10)]);
+            var card = new Card(point, RandomCardType(7), 0, 5, globalScale);
+            
             mainState.playerHand.push(card);
         }        
        
