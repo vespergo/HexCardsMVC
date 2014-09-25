@@ -30,6 +30,7 @@ var mainState = {
     score: [0,0],
     playerOneScore: {}, //text for the score
     playerTwoScore: {},
+    gameOver: false,
 
     preload: function () {
         //Load Art Assets
@@ -183,14 +184,16 @@ var mainState = {
        
     },
     toggleTurn: function (myTurn) {
-        game.myTurn = myTurn;
-        if (myTurn) {
-            this.turnText.text = "";
-            document.title = "HexMage - Your Turn";
-        }
-        else {
-            this.turnText.text = "Opponents Turn";
-            document.title = "HexMage";
+        if (!this.gameOver) {
+            game.myTurn = myTurn;
+            if (myTurn) {
+                this.turnText.text = "";
+                document.title = "HexMage - Your Turn";
+            }
+            else {
+                this.turnText.text = "Opponents Turn";
+                document.title = "HexMage";
+            }
         }
     }
 };

@@ -50,7 +50,7 @@ CardType = {
     Gecko: { sprite: { x: 0, y: -32, key: 'charSheet', frame: 0, background: 4 }, values: [2, 1, 3] },
     Rhino: { sprite: { x: 0, y: -32, key: 'charSheet', frame: 1, background: 4 }, values: [5, 3, 2] },
     Tortoise: { sprite: { x: 0, y: -32, key: 'charSheet', frame: 2, background: 4 }, values: [3, 3, 2] },
-    TorchBat: { sprite: { x: 0, y: -32, key: 'charSheet', frame: 3, background: 1 }, values: [1, 0, 4] },
+    TorchBat: { sprite: { x: 0, y: -20, key: 'charSheet', frame: 3, background: 1 }, values: [1, 0, 4] },
     Therapsid: { sprite: { x: 0, y: -32, key: 'charSheet', frame: 4, background: 1 }, values: [2, 2, 6] },
     EmberFox: { sprite: { x: 0, y: -32, key: 'charSheet', frame: 5, background: 1 }, values: [4, 2, 1] },
     ArcticWolf: { sprite: { x: 0, y: -32, key: 'charSheet', frame: 8, background: 2 }, values: [2, 6, 1] },
@@ -186,14 +186,36 @@ function Board() {
 
         //update score
         mainState.score = [0, 0];
+        var gameOver = true;
         for (var i = 0; i < mainState.board.slots.length; i++) {
             var card = mainState.board.slots[i];
             if (card != null) {
                 mainState.score[card.owner-1] += 1;
             }
+            else {
+                //if the whole board isn't full then the game isn't over
+                gameOver = false;
+            }
         }
         mainState.playerOneScore.setText(mainState.score[0]);
         mainState.playerTwoScore.setText(mainState.score[1]);
+
+        //gameover
+        if (gameOver) {
+            mainState.gameOver = true;
+            if (mainState.score[0] > mainState.score[1] && mainState.player == 1) {
+                mainState.turnText.setText("You Win!");
+            }
+            else if (mainState.score[0] < mainState.score[1] && mainState.player == 2) {
+                mainState.turnText.setText("You Win!");
+            }
+            else if (mainState.score[0] == mainState.score[1]) {
+                mainState.turnText.setText("Tie");
+            }
+            else {
+                mainState.turnText.setText("You Lose");
+            }
+        }
     }
 
     //retrieves the card near a point otherwise returns null
