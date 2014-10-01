@@ -53,6 +53,8 @@ CardType = {
     TorchBat: { sprite: { x: 0, y: -20, key: 'charSheet', frame: 3, background: 1 }, values: [1, 0, 4] },
     Therapsid: { sprite: { x: 0, y: -32, key: 'charSheet', frame: 4, background: 1 }, values: [2, 2, 6] },
     EmberFox: { sprite: { x: 0, y: -32, key: 'charSheet', frame: 5, background: 1 }, values: [4, 2, 1] },
+    SnowOwl: { sprite: { x: 0, y: -32, key: 'charSheet', frame: 6, background: 2 }, values: [2, 4, 1] },
+    Walrus: { sprite: { x: 0, y: -32, key: 'charSheet', frame: 7, background: 2 }, values: [3, 4, 4] },
     ArcticWolf: { sprite: { x: 0, y: -32, key: 'charSheet', frame: 8, background: 2 }, values: [2, 6, 1] },
 
     Treasure: { sprite: { x: 0, y: -32, key: 'treasure' }, values: [2, 2, 2] },

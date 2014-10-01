@@ -27,7 +27,7 @@ var mainState = {
     playerHand: [], //array of cards
     turnText: "", //status area in the center of the board
     player: 0, //1 or 2
-    score: [0,0],
+    score: [0, 0],
     playerOneScore: {}, //text for the score
     playerTwoScore: {},
     gameOver: false,
@@ -35,12 +35,12 @@ var mainState = {
     preload: function () {
         //Load Art Assets
         game.load.image('gameBoard', 'static/img/GameBoard.png');
-        game.load.image('handBoard', 'static/img/HandBoard.png');        
+        game.load.image('handBoard', 'static/img/HandBoard.png');
         game.load.image('treasure', 'static/img/Treasure.png');
         game.load.spritesheet('charSheet', 'static/img/CharacterSheet.png', 150, 140);
         game.load.spritesheet('numberSheet', 'static/img/numbers.png', 18, 22, 33, 1, 2);
         game.load.spritesheet('cardFrameSheet', 'static/img/FrameSheet.png', 150, 140, 6);
-        game.load.spritesheet('elementalBGs', 'static/img/ElementalBGs.png', 150, 140, 6);        
+        game.load.spritesheet('elementalBGs', 'static/img/ElementalBGs.png', 150, 140, 6);
     },
 
     create: function () {
@@ -49,10 +49,10 @@ var mainState = {
         //Add boards
         this.buildGameBoard();
         this.buildHandBoard();
-        
+
         // Display the scores
         this.playerOneScore = game.add.text(10, 5, this.score[0], { font: Math.floor(60 * globalScale) + 'px Arial', fill: 'blue' });
-        this.playerTwoScore = game.add.text(canvWidth-60, 5, this.score[1],{ font: Math.floor(60 * globalScale) + 'px Arial', fill: 'red' });
+        this.playerTwoScore = game.add.text(canvWidth - 60, 5, this.score[1], { font: Math.floor(60 * globalScale) + 'px Arial', fill: 'red' });
 
         //turntext
         this.turnText = game.add.text(game.world.centerX, 0, '',
@@ -65,7 +65,7 @@ var mainState = {
     },
 
     update: function () {
-        
+
     },
 
     buildGameBoard: function () {
@@ -124,9 +124,9 @@ var mainState = {
             { x: Math.round(this.gameBoard.x + 150 * globalScale), y: Math.round(this.gameBoard.y + 204 * globalScale) },
         ];
 
-                
+
         this.board = new Board();
-        
+
         this.emptyGameBoardHexes.createMultiple(19, 'cardFrameSheet', 0, true);
         for (var i = 0; i < this.emptyGameBoardHexes.length; i++) {
             this.emptyGameBoardHexes.getAt(i).x = gameBoardPositions[i].x;
@@ -164,24 +164,16 @@ var mainState = {
             { x: Math.round(this.handBoard.x + 300 * globalScale), y: Math.round(this.handBoard.y + 51 * globalScale) },
         ];
 
-        //create 9 cards
-
-        function RandomCardType(max) {
-            var randNum = Math.floor(Math.random() * max);
-            var i = 0;
-            for (var prop in CardType){
-                if (i == randNum) return CardType[prop];
-                i++;
-            }
-        }
-        //random cards
-        for (var i = 0; i < 9; i++) {
+        //create set of cards
+        var i = 0;
+        for (var prop in CardType) {
+            if (i == 9) break;
             var point = { x: handBoardPositions[i].x, y: handBoardPositions[i].y };
-            var card = new Card(point, RandomCardType(7), 0, 5, globalScale);
-            
+            var card = new Card(point, CardType[prop], 0, 3, globalScale);
             mainState.playerHand.push(card);
-        }        
-       
+            i++;
+        }
+
     },
     toggleTurn: function (myTurn) {
         if (!this.gameOver) {
