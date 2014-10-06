@@ -1,6 +1,8 @@
 /// <reference path="phaser.js" />
 /// <reference path="GameObject.js" />
 
+var websocket;
+
 //DISPLAY
 var canvWidth;
 var canvHeight;
@@ -62,6 +64,27 @@ var mainState = {
 
         //create treasure card
         mainState.board.CreateCard(9, CardType.Treasure, 0);
+
+        //websockets
+        var uri = "ws://" + window.location.host + "/api/Socket";
+        websocket = new WebSocket(uri);
+        
+        //Socket message handler  
+        websocket.onmessage = function (event) {
+            var json = JSON.parse(event.data);
+            if (json.action == "startgame") {
+                if (json.player == 1) { mainState.toggleTurn(true); }
+                mainState.player = json.player;
+                //flip all cards to color
+                for (var i = 0; i < mainState.playerHand.length; i++) {
+                    mainState.playerHand[i].SetOwner(mainState.player);
+                }
+            }
+            else if (json.action == "go") {
+                mainState.board.CreateCard(json.card.slotIndex, json.card.cardType, json.card.owner);
+                mainState.toggleTurn(true);
+            }
+        };
     },
 
     update: function () {
@@ -194,38 +217,7 @@ game.state.add('main', mainState);
 game.state.start('main');
 
 
-//websockets
-var uri = "ws://" + window.location.host + "/api/Socket";
 
-//Initialize socket  
-var websocket = new WebSocket(uri);
-
-//Open socket and send message  
-websocket.onopen = function () {
-    console.log('opening connection');
-};
-
-//Socket error handler  
-websocket.onerror = function (event) {
-    console.log('error');
-};
-
-//Socket message handler  
-websocket.onmessage = function (event) {
-    var json = JSON.parse(event.data);
-    if (json.action == "startgame") {
-        if (json.player == 1) { mainState.toggleTurn(true); }
-        mainState.player = json.player;
-        //flip all cards to color
-        for (var i = 0; i < mainState.playerHand.length; i++) {
-            mainState.playerHand[i].SetOwner(mainState.player);
-        }
-    }
-    else if (json.action == "go") {
-        mainState.board.CreateCard(json.card.slotIndex, json.card.cardType, json.card.owner);
-        mainState.toggleTurn(true);
-    }
-};
 
 //core funcs
 function CopyObject(obj) {

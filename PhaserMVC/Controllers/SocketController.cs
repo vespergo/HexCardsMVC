@@ -38,9 +38,17 @@ namespace PhaserMVC.Controllers
                 //launch a game
                 if (clientsWaiting.Count > 0)
                 {
-                    //have to add a delay in order to wait for the connection to be established to the 2nd player
-                    Task t = new Task(StartGame);
-                    t.Start();
+                    //remove the waiting client and start up a game
+                    var playerOne = clientsWaiting[0];
+                    clientsWaiting.Remove(playerOne);
+
+                    //player one, and setup opponents for ease of communication later
+                    playerOne.opponent = this;
+                    opponent = playerOne;
+
+                    //start game, sending the go signal to the first player                    
+                    playerOne.Send(jser.Serialize(new { action = "startgame", player = 1 }));
+                    this.Send(jser.Serialize(new { action = "startgame", player = 2 }));
                 }
                 else //OR wait for opponent
                 {
@@ -48,21 +56,6 @@ namespace PhaserMVC.Controllers
                 }
             }
 
-            async void StartGame()
-            {
-                //remove the waiting client and start up a game
-                var playerOne = clientsWaiting[0];
-                clientsWaiting.Remove(playerOne);
-
-                //player one, and setup opponents for ease of communication later
-                playerOne.opponent = this;
-                opponent = playerOne;
-
-                await Task.Delay(1000);
-                //start game, sending the go signal to the first player                    
-                playerOne.Send(jser.Serialize(new { action = "startgame", player = 1 }));
-                this.Send(jser.Serialize(new { action = "startgame", player = 2 }));
-            }
 
             public override void OnMessage(string message)
             {
