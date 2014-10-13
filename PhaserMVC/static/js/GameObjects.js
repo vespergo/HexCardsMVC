@@ -8,29 +8,31 @@ Card = function (point, cardType, elementNum, frameNum, cardScale) {
     this.owner = 0; //1 for playerOne;  2 for playerTwo
     this.cardType = cardType
 
-    this.cardImg = game.add.sprite(this.position.x, this.position.y, 'elementalBGs', cardType.sprite.background);
+    this.cardImg = game.add.sprite(this.position.x, this.position.y, 'flatBGs', frameNum);
     this.cardImg.anchor.setTo(0.5, 0.5);
     this.cardImg.scale.setTo(cardScale);
 
-    var frameImage = game.add.sprite(0, 0, 'cardFrameSheet', frameNum);
-    var numberLeft = game.add.sprite(-62, -20, 'numberSheet', this.values[0]);
-    var numberBottom = game.add.sprite(0, 53, 'numberSheet', this.values[1]);
-    var numberRight = game.add.sprite(62, -20, 'numberSheet', this.values[2]);
-    var character = game.add.sprite(cardType.sprite.x, cardType.sprite.y, cardType.sprite.key, cardType.sprite.frame);
+    var frameImage = game.add.sprite(0, 0, 'flatFrames', frameNum);
+    var frameBorder = game.add.sprite(0, 0, 'cardBorders', frameNum);
+    var numberLeft = game.add.sprite(-60, 28, 'flatNumbers', this.values[0]);
+    var numberTop = game.add.sprite(0, -63, 'flatNumbers', this.values[1]);
+    var numberRight = game.add.sprite(60, 28, 'flatNumbers', this.values[2]);
+    
 
     numberLeft.anchor.setTo(0.5, 0.5);
-    numberBottom.anchor.setTo(0.5, 0.5);
+    numberTop.anchor.setTo(0.5, 0.5);
     numberRight.anchor.setTo(0.5, 0.5);
+    frameBorder.anchor.setTo(0.5, 0.5);
     frameImage.anchor.setTo(0.5, 0.5);
-    character.anchor.setTo(0.5, 0.5);
+    
 
-    //we'll bing all the sprites to the this.cardImg one and then they'll follow the this.cardImg as it's dragged
+    //we'll bring all the sprites to the this.cardImg one and then they'll follow the this.cardImg as it's dragged
     this.cardImg.addChild(frameImage);
+    this.cardImg.addChild(frameBorder);
     this.cardImg.addChild(numberLeft);
-    this.cardImg.addChild(numberBottom);
+    this.cardImg.addChild(numberTop);
     this.cardImg.addChild(numberRight);
-    this.cardImg.addChild(character);
-    this.cardImg.hitArea = new Phaser.Circle(0, 0, 125);
+    this.cardImg.hitArea = new Phaser.Circle(0, 0, 144);
 
     this.cardImg.inputEnabled = true;
     this.cardImg.input.enableDrag(true);
@@ -40,7 +42,7 @@ Card = function (point, cardType, elementNum, frameNum, cardScale) {
     this.SetValues = function (values) {
         this.values = values;
         numberLeft.frame = this.values[0];
-        numberBottom.frame = this.values[1];
+        numberTop.frame = this.values[1];
         numberRight.frame = this.values[2];
     }
 }
@@ -71,21 +73,21 @@ Card.prototype.dragStop = function (cardImg) {
     var onBoard = false;
     var cardCenter = { x: cardImg.position.x + cardImg.width / 2, y: cardImg.position.y + cardImg.height / 2 };
 
-    for (var i = 0; i < mainState.emptyGameBoardHexes.length; i++) {
-        var boardHex = mainState.emptyGameBoardHexes.getAt(i);
+    for (var i = 0; i < mainState.emptyfadeGridHexes.length; i++) {
+        var boardHex = mainState.emptyfadeGridHexes.getAt(i);
         if (boardHex.position.x < cardCenter.x && cardCenter.x < boardHex.position.x + boardHex.width &&
          boardHex.position.y < cardCenter.y && cardCenter.y < boardHex.position.y + boardHex.width) {
             //only place if not already on the board
             if (mainState.board.slots[i] == null) {
-                //found hex on board
-                onBoard = true;
+            //found hex on board
+            onBoard = true;
                 this.position = CopyObject(boardHex.position);
                 this.cardImg.position = CopyObject(boardHex.position);
                 mainState.board.PlaceCard(i, this);
                 cardImg.inputEnabled = false;
-                break;
-            }
+            break;
         }
+    }
     }
     //return to origPos
     if (!onBoard) {
@@ -99,10 +101,14 @@ Card.prototype.SetOwner = function (owner) {
 
     //the children[0] is the first child sprite added to the cardImg sprite group, hence the frame image
     if (this.owner == 1) {
-        this.cardImg.children[0].frame = 4;
+        this.cardImg.frame = 1;
+        this.cardImg.children[0].frame = 1;
+        this.cardImg.children[1].frame = 1;
     }
     else if (this.owner == 2) {
-        this.cardImg.children[0].frame = 5;
+        this.cardImg.frame = 6;
+        this.cardImg.children[0].frame = 6;
+        this.cardImg.children[1].frame = 6;
     }
 
 }
@@ -121,15 +127,18 @@ function Board() {
         mainState.toggleTurn(false);
 
         //websocket, send info to other player
-        websocket.send(JSON.stringify({ action: 'go', card: { slotIndex: slotIndex, cardType: {sprite: card.cardType.sprite, values: card.values}, owner: card.owner } }));
+        websocket.send(JSON.stringify({
+            action: 'go',
+            card: { slotIndex: slotIndex, cardType: { sprite: card.cardType.sprite, values: card.values }, owner: card.owner }
+        }));
 
     }
 
     this.CreateCard = function (slotIndex, cardType, owner) {
         //get the point coords
-        var point = { x: mainState.emptyGameBoardHexes.getAt(slotIndex).x, y: mainState.emptyGameBoardHexes.getAt(slotIndex).y };
+        var point = { x: mainState.emptyfadeGridHexes.getAt(slotIndex).x, y: mainState.emptyfadeGridHexes.getAt(slotIndex).y };
 
-        var card = new Card(point, cardType, 0, 3, globalScale);
+        var card = new Card(point, cardType, 4, 3, globalScale);
         card.SetOwner(owner);
         card.cardImg.inputEnabled = false;
         this.slots[slotIndex] = card;
@@ -153,14 +162,14 @@ function Board() {
 
         phantomPoint = CalculatePoint(initialPoint, card.cardImg.width, 60);
         cardAtPoint = this.GetCardFromFuzzyHexGrid(phantomPoint);
-        if (cardAtPoint && card.values[1] > cardAtPoint.values[0] && cardAtPoint.owner != card.owner) {
+        if (cardAtPoint && card.values[2] > cardAtPoint.values[1] && cardAtPoint.owner != card.owner) {
             cardAtPoint.SetOwner(card.owner);
             
         }
 
         phantomPoint = CalculatePoint(initialPoint, card.cardImg.width, 120);
         cardAtPoint = this.GetCardFromFuzzyHexGrid(phantomPoint);
-        if (cardAtPoint && card.values[1] > cardAtPoint.values[2] && cardAtPoint.owner != card.owner) {
+        if (cardAtPoint && card.values[0] > cardAtPoint.values[1] && cardAtPoint.owner != card.owner) {
             cardAtPoint.SetOwner(card.owner);
             
         }
@@ -174,14 +183,14 @@ function Board() {
 
         phantomPoint = CalculatePoint(initialPoint, card.cardImg.width, 240);
         cardAtPoint = this.GetCardFromFuzzyHexGrid(phantomPoint);
-        if (cardAtPoint && card.values[0] > cardAtPoint.values[1] && cardAtPoint.owner != card.owner) {
+        if (cardAtPoint && card.values[1] > cardAtPoint.values[2] && cardAtPoint.owner != card.owner) {
             cardAtPoint.SetOwner(card.owner);
             
         }
 
         phantomPoint = CalculatePoint(initialPoint, card.cardImg.width, 300);
         cardAtPoint = this.GetCardFromFuzzyHexGrid(phantomPoint);
-        if (cardAtPoint && card.values[2] > cardAtPoint.values[1] && cardAtPoint.owner != card.owner) {
+        if (cardAtPoint && card.values[1] > cardAtPoint.values[0] && cardAtPoint.owner != card.owner) {
             cardAtPoint.SetOwner(card.owner);
             
         }
@@ -235,6 +244,7 @@ function Board() {
         return null;
     }
 }
+
 
 function CalculatePoint(initialPoint, distance, angle) {
     //bx = ax + d*cos(t);

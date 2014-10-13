@@ -104,13 +104,14 @@
     <Content Include="Global.asax" />
     <Content Include="static\css\style.css" />
     <Content Include="static\favicon.ico" />
-    <Content Include="static\img\CharacterSheet.png" />
-    <Content Include="static\img\ElementalBGs.png" />
-    <Content Include="static\img\FrameSheet.png" />
-    <Content Include="static\img\GameBoard.png" />
-    <Content Include="static\img\HandBoard.png" />
-    <Content Include="static\img\numbers.png" />
-    <Content Include="static\img\Treasure.png" />
+    <Content Include="static\img\blankhex.png" />
+    <Content Include="static\img\borders.png" />
+    <Content Include="static\img\cardback.png" />
+    <Content Include="static\img\cardshadow.png" />
+    <Content Include="static\img\designs.png" />
+    <Content Include="static\img\fadegrid.png" />
+    <Content Include="static\img\flatnumbers.png" />
+    <Content Include="static\img\frames.png" />
     <Content Include="static\js\GameObjects.js" />
     <Content Include="static\js\main.js" />
     <Content Include="static\js\phaser.js" />
@@ -132,9 +133,9 @@
     <Content Include="Views\web.config" />
     <Content Include="packages.config" />
     <Content Include="Views\Home\Index.cshtml" />
-    <Content Include="static\js\phaser.map" />
     <None Include="Properties\PublishProfiles\VM FTP.pubxml" />
     <Content Include="Views\Admin\Index.cshtml" />
+    <Content Include="static\js\phaser.map" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
