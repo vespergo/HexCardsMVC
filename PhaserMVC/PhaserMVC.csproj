@@ -112,6 +112,7 @@
     <Content Include="static\img\fadegrid.png" />
     <Content Include="static\img\flatnumbers.png" />
     <Content Include="static\img\frames.png" />
+    <Content Include="static\img\patternbar.png" />
     <Content Include="static\js\GameObjects.js" />
     <Content Include="static\js\main.js" />
     <Content Include="static\js\phaser.js" />

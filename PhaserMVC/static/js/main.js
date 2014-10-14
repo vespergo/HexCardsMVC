@@ -7,19 +7,20 @@ var websocket;
 var canvWidth;
 var canvHeight;
 
+canvHeight = window.innerHeight;
+var globalScale = (canvHeight / 965).toFixed(4);
+
 //desktop, 768 x 965
 if (window.innerWidth > window.innerHeight) {
-    canvWidth = 768;
-    canvHeight = window.innerHeight;
+    canvWidth = 768 * globalScale;
 }
 else {
-    canvWidth = window.innerWidth;
-    canvHeight = window.innerHeight;
+    canvWidth = window.innerWidth;    
 }
 
 var game = new Phaser.Game(canvWidth, canvHeight, Phaser.AUTO, 'mainDiv');
 game.myTurn = false;
-var globalScale = (canvHeight / 965).toFixed(4);
+
 
 
 var mainState = {
@@ -35,9 +36,7 @@ var mainState = {
     gameOver: false,
 
     preload: function () {
-        //Load Art Assets
-        game.load.image('fadeGrid', 'static/img/fadeGrid.png');
-
+        
         //flat graphics
         game.load.image('fadeGrid', 'static/img/fadegrid.png');
         game.load.image('cardShadow', 'static/img/cardshadow.png');
