@@ -34,6 +34,7 @@ var mainState = {
     playerOneScore: {}, //text for the score
     playerTwoScore: {},
     gameOver: false,
+    isDragging: false,
 
     preload: function () {
         
@@ -93,11 +94,23 @@ var mainState = {
     },
 
     update: function () {
-
+        if (this.isDragging) {
+            
+            for (var i = 0; i < this.emptyfadeGridHexes.length; i++) {
+                var boardHex = mainState.emptyfadeGridHexes.getAt(i);
+                if (Math.abs(boardHex.x-game.input.x) < boardHex.width && Math.abs(boardHex.y-game.input.y) < boardHex.height) {
+                    boardHex.visible = true;
+                }
+                else {
+                    boardHex.visible = false;
+                }
+            }
+        }
     },
 
     buildfadeGrid: function () {
         this.fadeGrid = game.add.sprite(game.world.centerX, Math.round(game.world.height / 2.7), 'fadeGrid');
+        this.fadeGrid.visible = false;
         this.fadeGrid.anchor.setTo(0.5, 0.5);
         this.fadeGrid.scale.setTo(globalScale);
         this.fadeGrid.alpha = 1;
@@ -162,7 +175,8 @@ var mainState = {
             this.emptyfadeGridHexes.getAt(i).y = fadeGridPositions[i].y;
             this.emptyfadeGridHexes.getAt(i).anchor.setTo(0.5, 0.5);
             this.emptyfadeGridHexes.getAt(i).scale.setTo(globalScale);
-            this.emptyfadeGridHexes.getAt(i).alpha = .15;
+            this.emptyfadeGridHexes.getAt(i).alpha = .2;
+            this.emptyfadeGridHexes.getAt(i).visible = false;
         }
     },
     buildHandBoard: function () {

@@ -36,6 +36,7 @@ Card = function (point, cardType, elementNum, frameNum, cardScale) {
 
     this.cardImg.inputEnabled = true;
     this.cardImg.input.enableDrag(true);
+    this.cardImg.events.onDragStart.add(this.dragStart);
     this.cardImg.events.onDragStop.add(this.dragStop, this);
 
     //udpate values if the card has any effects placed on it
@@ -62,7 +63,22 @@ CardType = {
     Treasure: { sprite: { x: 0, y: -32, key: 'treasure' }, values: [2, 2, 2] },
 }
 
+Card.prototype.dragStart = function () {
+    mainState.fadeGrid.visible = true;
+    mainState.isDragging = true;
+}
+
 Card.prototype.dragStop = function (cardImg) {
+
+    //hide our helper fades
+    mainState.fadeGrid.visible = false;
+    mainState.isDragging = false;
+    for (var i = 0; i < mainState.emptyfadeGridHexes.length; i++) {
+        var boardHex = mainState.emptyfadeGridHexes.getAt(i);
+        boardHex.visible = false;
+    }
+
+
     //can't play if it isn't your turn
     if (!game.myTurn) {
         cardImg.position = CopyObject(this.origPos);
