@@ -50,15 +50,15 @@ Card = function (point, cardType, elementNum, frameNum, cardScale) {
 
 //enum for card types
 CardType = {
-    Gecko: { sprite: { x: 0, y: -32, key: 'charSheet', frame: 0, background: 4 }, values: [2, 1, 3] },
-    Rhino: { sprite: { x: 0, y: -32, key: 'charSheet', frame: 1, background: 4 }, values: [5, 3, 2] },
-    Tortoise: { sprite: { x: 0, y: -32, key: 'charSheet', frame: 2, background: 4 }, values: [3, 3, 2] },
-    TorchBat: { sprite: { x: 0, y: -20, key: 'charSheet', frame: 3, background: 1 }, values: [1, 0, 4] },
-    Therapsid: { sprite: { x: 0, y: -32, key: 'charSheet', frame: 4, background: 1 }, values: [2, 2, 6] },
-    EmberFox: { sprite: { x: 0, y: -32, key: 'charSheet', frame: 5, background: 1 }, values: [4, 2, 1] },
-    SnowOwl: { sprite: { x: 0, y: -32, key: 'charSheet', frame: 6, background: 2 }, values: [2, 4, 1] },
-    Walrus: { sprite: { x: 0, y: -32, key: 'charSheet', frame: 7, background: 2 }, values: [3, 4, 4] },
-    ArcticWolf: { sprite: { x: 0, y: -32, key: 'charSheet', frame: 8, background: 2 }, values: [2, 6, 1] },
+    Gecko: { sprite: { x: 0, y: -32, key: 'charSheet', frame: 0, background: 4 }, values: [1, 2, 3] },
+    Rhino: { sprite: { x: 0, y: -32, key: 'charSheet', frame: 1, background: 4 }, values: [2, 3, 1] },
+    Tortoise: { sprite: { x: 0, y: -32, key: 'charSheet', frame: 2, background: 4 }, values: [3, 1, 2] },
+    TorchBat: { sprite: { x: 0, y: -20, key: 'charSheet', frame: 3, background: 1 }, values: [2, 3, 4] },
+    Therapsid: { sprite: { x: 0, y: -32, key: 'charSheet', frame: 4, background: 1 }, values: [3, 4, 2] },
+    EmberFox: { sprite: { x: 0, y: -32, key: 'charSheet', frame: 5, background: 1 }, values: [4, 2, 3] },
+    SnowOwl: { sprite: { x: 0, y: -32, key: 'charSheet', frame: 6, background: 2 }, values: [5, 7, 9] },
+    Walrus: { sprite: { x: 0, y: -32, key: 'charSheet', frame: 7, background: 2 }, values: [7, 9, 5] },
+    ArcticWolf: { sprite: { x: 0, y: -32, key: 'charSheet', frame: 8, background: 2 }, values: [9, 5, 7] },
 
     Treasure: { sprite: { x: 0, y: -32, key: 'treasure' }, values: [2, 2, 2] },
 }

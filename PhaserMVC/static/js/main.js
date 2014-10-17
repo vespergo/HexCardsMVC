@@ -58,8 +58,8 @@ var mainState = {
         this.buildHandBoard();
 
         // Display the scores
-        this.playerOneScore = game.add.text(10, 5, this.score[0], { font: Math.floor(60 * globalScale) + 'px Arial', fill: 'red' });
-        this.playerTwoScore = game.add.text(canvWidth - 60, 5, this.score[1], { font: Math.floor(60 * globalScale) + 'px Arial', fill: 'blue' });
+        this.playerOneScore = game.add.text(20, 5, this.score[0], { font: Math.floor(60 * globalScale) + 'px Arial', fill: 'red' });
+        this.playerTwoScore = game.add.text(canvWidth - 80, 5, this.score[1], { font: Math.floor(60 * globalScale) + 'px Arial', fill: 'blue' });
 
         //turntext
         this.turnText = game.add.text(game.world.centerX, 0, '',
@@ -79,7 +79,12 @@ var mainState = {
         websocket.onmessage = function (event) {
             var json = JSON.parse(event.data);
             if (json.action == "startgame") {
-                if (json.player == 1) { mainState.toggleTurn(true); }
+                if (json.player == 1) {
+                    mainState.toggleTurn(true);
+                } else {
+                    //give second player a weaker card
+                    mainState.playerHand[0].SetValues([0,0,0]);
+                }
                 mainState.player = json.player;
                 //flip all cards to color
                 for (var i = 0; i < mainState.playerHand.length; i++) {
@@ -95,14 +100,24 @@ var mainState = {
 
     update: function () {
         if (this.isDragging) {
-            
+
+            //deselect previous hexes
             for (var i = 0; i < this.emptyfadeGridHexes.length; i++) {
                 var boardHex = mainState.emptyfadeGridHexes.getAt(i);
-                if (Math.abs(boardHex.x-game.input.x) < boardHex.width && Math.abs(boardHex.y-game.input.y) < boardHex.height) {
-                    boardHex.visible = true;
-                }
-                else {
-                    boardHex.visible = false;
+                boardHex.visible = false;
+            }
+
+            //only allow one hex to be selected
+            var selectedHex = false;
+
+            for (var i = 0; i < this.emptyfadeGridHexes.length; i++) {
+                var boardHex = mainState.emptyfadeGridHexes.getAt(i);
+                if (Math.abs(boardHex.x-game.input.x) < boardHex.width/2 && Math.abs(boardHex.y-game.input.y) < boardHex.width/2) {                
+                    if (!selectedHex) {
+                        boardHex.visible = true;
+                        selectedHex = true;
+                    }
+                    
                 }
             }
         }
@@ -222,12 +237,10 @@ var mainState = {
         if (!this.gameOver) {
             game.myTurn = myTurn;
             if (myTurn) {
-                this.turnText.text = "";
-                document.title = "HexMage - Your Turn";
+                this.turnText.text = "Your Turn";                
             }
             else {
                 this.turnText.text = "Opponents Turn";
-                document.title = "HexMage";
             }
         }
 
